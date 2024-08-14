@@ -41,6 +41,8 @@ A local file `config.json` is needed with configuration. Use this as boilerplate
 }
 ~~~
 
+Set `endpoint` to `null` to disable SPARQL API.
+
 Make sure the Neo4j (or compatible) database is read-only because this application does not guarantee to filter out write queries!
 
 ## Usage

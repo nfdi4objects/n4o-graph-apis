@@ -92,8 +92,8 @@ if __name__ == '__main__':
         config = json.load(fp)
         app.config["cypher-backend"] = CypherBackend(config['cypher'])
         app.config["cypher-example"] = config["cypher"]["example"] if "example" in config["cypher"] else ""
-        app.config["sparql-proxy"] = SparqlProxy(
-            config["sparql"]["endpoint"]) if "sparql" in config else None
+        endpoint = config["sparql"]["endpoint"]
+        app.config["sparql-proxy"] = SparqlProxy(endpoint) if endpoint else None
 
     if args.wsgi:
         serve(app, host="0.0.0.0", **opts)

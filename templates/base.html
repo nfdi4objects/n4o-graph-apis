@@ -30,14 +30,16 @@
               <a class="nav-link" href="{{url_for('cypher_form')}}">Cypher</a>
             {% endif %}
         </li>
-        <li class="nav-item">
+        {% if config["sparql-proxy"] %}
+          <li class="nav-item">
             {% if request.path.endswith("/sparql") %}
               <a class="nav-link selected" href="{{url_for('sparql_form')}}">SPARQL</a>
             {% else %}
               <a class="nav-link" href="{{url_for('sparql_form')}}">SPARQL</a>
             {% endif %}
-        </li>
-        </ul>
+          </li>
+        {% endif %}
+      </ul>
     </nav>
     </header>
     <main>

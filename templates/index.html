@@ -14,7 +14,12 @@
     </li>
     <li>
       a labeled property graph with <a href="https://github.com/nfdi4objects/n4o-graph-apis#cypher-property-graph-api">Cypher Property Graph API</a>
-      at <code>/api/cypher</code>. <a href="cypher">Try online</a>!
+      at <code>/api/cypher</code>.
+      {% if config["sparql-proxy"] %}
+        <a href="cypher">Try online</a>!
+      {% else %}
+        <b>not available yet</b>
+      {% endif %}
     </li>
   </ul>
   <p>

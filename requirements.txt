@@ -1,0 +1,8 @@
+typing_extensions
+portion
+jsonpath_ng
+neo4j
+Flask
+waitress
+pytest
+requests

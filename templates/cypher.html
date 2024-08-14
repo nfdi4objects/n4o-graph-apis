@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <p>Cypher PG API endpoint <code>/api/cypher</code></p>
+<form method="post" id="cypherForm">
+  <div class="yasqe">
+     <textarea class="form-control" rows="3" name="query" id="cypherform">{{query}}</textarea>
+  </div>
+  <div>
+     <button type="submit" class="btn btn-primary">Senden</button>
+  </div>
+  <div class="form-group" id="cypherResult"></div>
+</form>
+
+  <script>
+    window.onload = function() {
+var editor = CodeMirror.fromTextArea(document.getElementById('cypherform'), {
+    mode: 'cypher',
+    indentWithTabs: true,
+    smartIndent: true,
+    lineNumbers: true,
+    matchBrackets: true,
+    autofocus: true,
+    theme: "default"
+  })
+      }
+  </script>
+ 
+{% endblock %}

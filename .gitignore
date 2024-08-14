@@ -1,0 +1,9 @@
+data/
+__pycache__/
+bin/
+lib/
+pyvenv.cfg
+.venv/
+node_modules/
+neo4j.json
+config.json

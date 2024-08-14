@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <p>
+    This page provides API prototype to the 
+    <b>NFDI4Objects Knowledge Graph</b>. The
+    Knowledge Graph consists of two databases
+    with individual API each:
+  </p>
+  <ul>
+    <li>
+      an RDF triple store with <a href="https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/#query-operation">SPARQL query API</a>
+      at <code>/api/sparql</code>. <a href="sparql">Try online</a>!
+    </li>
+    <li>
+      a labeled property graph with <a href="https://github.com/nfdi4objects/n4o-graph-apis#cypher-property-graph-api">Cypher Property Graph API</a>
+      at <code>/api/cypher</code>. <a href="cypher">Try online</a>!
+    </li>
+  </ul>
+  <p>
+    Triple store and labeled property graph contain different subsets of the
+    knowledge graph.
+    Please consult <a href="https://nfdi4objects.github.io/n4o-graph/">the manual</a>
+    for details!
+  </p>
+{% endblock %}

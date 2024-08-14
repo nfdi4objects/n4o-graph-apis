@@ -7,24 +7,30 @@ function showCypherResult(result, elem) {
     elem.innerHTML = "Invalid response!"
     return
   } 
-  elem.innerHTML = `Got ${result.length} records`
+  elem.innerHTML = ''
 
   if (!result.length) return
 
-  const table = document.createElement('table');
-  table.className = "table"
-  elem.appendChild(table)
+  const table = document.createElement('table')
+  table.className = "display"
+  const thead = document.createElement('thead')
+  const tbody = document.createElement('tbody')
+  table.appendChild(thead)
+  table.appendChild(tbody)
 
   const keys = Object.keys(result[0])
-  const tr = table.insertRow()
+  const tr = thead.insertRow()
+  tr.appendChild(document.createElement('th'))
   keys.forEach(key => {
     const th = document.createElement('th')
     th.textContent = key
     tr.appendChild(th)
   })
 
-  result.forEach(row => {
-    const tr = table.insertRow()
+  result.forEach((row, i) => {
+    const tr = tbody.insertRow()
+    var td = tr.insertCell()
+    td.textContent = i+1
     keys.forEach(key => {
       var td = tr.insertCell()
       var value
@@ -38,6 +44,9 @@ function showCypherResult(result, elem) {
       td.textContent = value
     })
   })
+
+  elem.appendChild(table)
+  table = new DataTable(table) //'#cypherResult');
 }
 
 document.addEventListener('DOMContentLoaded', () => {

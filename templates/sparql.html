@@ -3,23 +3,16 @@
 {% block content %}
   <script src="https://unpkg.com/@triply/yasr/build/yasr.min.js"></script>
   <script src="https://unpkg.com/@triply/yasqe/build/yasqe.min.js"></script>
-  <p>SPARQL endpoint <code>/api/sparql</code></p>
+  <script src="{{url_for('static',filename='sparql-gui.js')}}"></script>
+
+  <p>
+    {% if 'examples' in config.sparql %}
+      {% set examples = config.sparql.examples %}
+      {% include 'examples.html' %}
+    {% endif %}
+    SPARQL endpoint <code>/api/sparql</code>
+  </p>
   <div id="yasqe"></div>
   <div id="yasr"></div>
-  <script>
-    window.onload = function() {
-      const yasqe = new Yasqe(document.getElementById("yasqe"), {
-        requestOpts: {
-          endpoint: "/api/sparql",
-          method: "POST",
-        },
-	    sparql: { showQueryButton: true }
-      })
-      const yasr = new Yasr(document.getElementById("yasr"), {
-	    prefixes: yasqe.getPrefixesFromQuery
-      })
-      yasqe.on("queryResponse", (instance, res) => yasr.setResponse(res))
-    }
-  </script>
 </body>
 {% endblock %}

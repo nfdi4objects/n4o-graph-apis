@@ -3,33 +3,28 @@
 {% block content %}
 <link rel="stylesheet" href="https://cdn.datatables.net/2.1.3/css/dataTables.dataTables.css" />
 <script src="https://cdn.datatables.net/2.1.3/js/dataTables.js"></script>
+<script src="{{url_for('static',filename='cypher-gui.js')}}"></script>
 
-  <p>Cypher PG API endpoint <code>/api/cypher</code></p>
-<form method="post" id="cypherForm">
-  <div class="yasqe">
-     <textarea class="form-control" rows="3" name="query" id="cypherform">{{query}}</textarea>
-  </div>
-  <div>
-     <button type="submit" class="btn btn-primary">Senden</button>
-  </div>
-</form>
+  <form method="post" id="cypherForm">
+    <p>
+      {% if 'examples' in config.cypher %}
+        {% set examples = config.cypher.examples %}
+        {% include 'examples.html' %}
+      {% endif %}
+    </div>
+      Cypher PG API endpoint <code>/api/cypher</code>
+    </p>
+    <div class="yasqe">
+      <textarea class="form-control" rows="3" name="query" id="cypherform">{{examples[0].query}}</textarea>
+    </div>
+    <div>
+      <button type="submit" class="btn btn-primary">Senden</button>
+    </div>
+  </form>
   <div class="yasr">
     <div class="yasr_results">
       <div id="cypherResult"></div>
     </div>
   </div>
-  <script>
-    window.onload = function() {
-var editor = CodeMirror.fromTextArea(document.getElementById('cypherform'), {
-    mode: 'cypher',
-    indentWithTabs: true,
-    smartIndent: true,
-    lineNumbers: true,
-    matchBrackets: true,
-    autofocus: true,
-    theme: "default"
-  })
-      }
-  </script>
  
 {% endblock %}

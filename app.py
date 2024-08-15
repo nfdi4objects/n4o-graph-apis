@@ -1,4 +1,4 @@
-import json
+import json, yaml, sys
 from flask import Flask, render_template, request, make_response
 from waitress import serve
 import argparse
@@ -65,7 +65,7 @@ def sparql_api():
 
 @app.route('/cypher')
 def cypher_form():
-    return render_template('cypher.html', query=app.config["cypher-example"])
+    return render_template('cypher.html')
 
 
 @app.route('/sparql')
@@ -80,7 +80,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '-w', '--wsgi', action=argparse.BooleanOptionalAction, help="Use WSGI server")
     parser.add_argument('-c', '--config', type=str,
-                        default="config.json", help="Config file")
+                        default="config.yaml", help="Config file")
     parser.add_argument('-d', '--debug', action=argparse.BooleanOptionalAction)
     args = parser.parse_args()
 
@@ -88,12 +88,22 @@ if __name__ == '__main__':
     if args.debug:
         opts["debug"] = True
 
-    with open(args.config) as fp:
-        config = json.load(fp)
-        app.config["cypher-backend"] = CypherBackend(config['cypher'])
-        app.config["cypher-example"] = config["cypher"]["example"] if "example" in config["cypher"] else ""
-        endpoint = config["sparql"]["endpoint"]
-        app.config["sparql-proxy"] = SparqlProxy(endpoint) if endpoint else None
+    with open(args.config) as stream:
+        try:
+            config = yaml.safe_load(stream)
+        except yaml.YAMLError as err:
+            msg = "Error in %s" % (args.config)
+            if hasattr(err, 'problem_mark'):
+                mark = err.problem_mark
+                msg += " at line %s char %s" % (mark.line+1, mark.column+1)
+            print(msg, file=sys.stderr)
+            sys.exit(1)
+
+    for key in config.keys():
+        app.config[key] = config[key]
+    app.config["cypher-backend"] = CypherBackend(config['cypher'])
+    endpoint = config["sparql"]["endpoint"]
+    app.config["sparql-proxy"] = SparqlProxy(endpoint) if endpoint else None
 
     if args.wsgi:
         serve(app, host="0.0.0.0", **opts)

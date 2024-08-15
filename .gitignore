@@ -6,4 +6,4 @@ pyvenv.cfg
 .venv/
 node_modules/
 neo4j.json
-config.json
+config.yaml

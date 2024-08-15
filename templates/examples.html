@@ -1,0 +1,8 @@
+<div style="float:right;">
+  <label for="examples">Example queries:</label>
+  <select id="examples">
+    {% for ex in examples %}
+      <option value="{{ex.query}}">{{ex.name}}</option>
+    {% endfor %}
+  </select>
+</div>

@@ -3,16 +3,18 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="{{url_for('static',filename='codemirror.css')}}" rel="stylesheet">
-    <link href="https://unpkg.com/@triply/yasgui/build/yasgui.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{url_for('static',filename='codemirror/codemirror.css')}}" rel="stylesheet">
+    <link href="{{url_for('static',filename='yasgui.min.css')}}" rel="stylesheet">
     <link href="{{url_for('static',filename='style.css')}}" rel="stylesheet">
     <link rel="icon" href="{{url_for('static',filename='nfdi4objects-logo.png')}}" sizes="32x32" />
     <link rel="icon" href="{{url_for('static',filename='nfdi4objects-logo.png')}}" sizes="192x192" />
     <link rel="apple-touch-icon" href="{{url_for('static',filename='nfdi4objects-logo.png')}}" />
-    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
-    <script src="{{url_for('static',filename='codemirror.js')}}"></script>
-    <script src="{{url_for('static',filename='cypher.js')}}"></script>
-    <!--script src="{{url_for('static',filename='pg.js')}}"></script-->
+    <script src="{{url_for('static',filename='jquery-3.7.1.slim.min.js')}}"></script>
+    <script src="{{url_for('static',filename='codemirror/codemirror.js')}}"></script>
+    <script src="{{url_for('static',filename='codemirror/runmode.js')}}"></script>
+    <script src="{{url_for('static',filename='codemirror/cypher.js')}}"></script>
+    <script src="{{url_for('static',filename='codemirror/javascript.js')}}"></script>
+    <script src="{{url_for('static',filename='codemirror/pg.js')}}"></script>
     <meta name="msapplication-TileImage" content="{{url_for('static',filename='nfdi4objects-logo.png')}}" />
     <title>NFDI4Objects Knowledge Graph APIs</title>
   </head>

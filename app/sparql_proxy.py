@@ -1,33 +1,61 @@
 # from werkzeug.wsgi import wrap_file
 import requests
+from flask import Response
+from .error import ApiError
 
 
 class SparqlProxy:
 
-    def __init__(self, api):
+    def __init__(self, api, debug=False):
         self.api = api
+        self.debug = debug
 
     def request(self, request):
-        # Supported parameters as defined by SPARQL protocol specification
-        query = request.values.get("query", "")
-        # TODO: support POST with full body: see https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/#query-operation
+        # https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/#query-operation
+        if request.method == "GET":
+            query = request.args.get("query", "")
+        elif request.method == "POST":
+            content = request.headers.get('content-type')
+            if content == "application/sparql-query":
+                query = request.data.decode('utf-8')
+            elif content == "application/x-www-form-urlencoded":
+                query = request.form.get("query", "")
+            else:
+                raise ApiError("Invalid Content-Type!", 400)
+        else:
+            raise ApiError("Request method not supported!", 400)
 
-        headers = {
-            "Content-Type": "application/sparql-query"
-        }
-        # Copy selected headers from original request (TODO: which more?)
-        copyHeaders = ["Accept", "Accept-Encoding", "Accept-Language"]
-        for name in copyHeaders:
-            if name in request.headers:
-                headers[name] = request.headers[name]
+        if query == "":
+            raise ApiError("Missing or empty query!", 400)
 
         params = {}
-        copyParams = ["default-graph-uri", "named-graph-uri"]
-        for name in copyParams:
+        for name in ["default-graph-uri", "named-graph-uri"]:
             if name in request.values:
                 params[name] = request.values[name]
 
-        # TODO: pass result via werkzeug.wsgi.wrap_file to avoid re-parsing of response
-        resp = requests.post(self.api, data=query,
-                             params=params, headers=headers, stream=True)
-        return resp.raw.read(), resp.status_code, resp.headers.items()
+        # TODO: Set X-Forwarded-For and add more request headers?
+
+        allowed = ["Accept", "Accept-Encoding", "Accept-Language"]
+        headers = {k: v for k, v in request.headers.items() if k in allowed}
+        headers["Content-Type"] = "application/sparql-query"
+
+        # Some clients and servers disagree about meaning of not setting this server
+        if not headers.get("Accept-Encoding"):
+            headers["Accept-Encoding"] = ""
+
+        if self.debug:
+            print('SPARQL query %s %s: %s' % (params, headers, query))
+
+        res = requests.post(self.api, data=query,
+                            params=params, headers=headers, stream=True)
+
+        allowed = ["Content-Type", "Vary",
+                   "Cache-Control", "Pragma", "Content-Encoding"]
+        headers = {k: v for k, v in res.raw.headers.items() if k in allowed}
+
+        def generate():
+            for chunk in res.raw.stream(decode_content=False):
+                yield chunk
+        out = Response(generate(), headers=headers)
+        out.status_code = res.status_code
+        return out

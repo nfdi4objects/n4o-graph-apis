@@ -10,13 +10,14 @@
   <ul>
     <li>
       an RDF triple store with <a href="https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/#query-operation">SPARQL query API</a>
-      at <code>/api/sparql</code>. <a href="sparql">Try online</a>!
+      at <code>/api/sparql</code>. <br><b><a href="sparql">Try online</a>!</b>
     </li>
     <li>
       a labeled property graph with <a href="https://github.com/nfdi4objects/n4o-graph-apis#cypher-property-graph-api">Cypher Property Graph API</a>
       at <code>/api/cypher</code>.
       {% if config["sparql-proxy"] %}
-        <a href="cypher">Try online</a>!
+        <br>
+        <b><a href="cypher">Try online</a>!</b>
       {% else %}
         <b>not available yet</b>
       {% endif %}

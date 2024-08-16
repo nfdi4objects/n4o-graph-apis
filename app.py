@@ -1,4 +1,6 @@
-import json, yaml, sys
+import json
+import yaml
+import sys
 from flask import Flask, render_template, request, make_response
 from waitress import serve
 import argparse
@@ -7,7 +9,8 @@ from app import CypherBackend, SparqlProxy, ApiError
 
 
 def jsonify(data, status=200, indent=3, sort_keys=False):
-    response = make_response(json.dumps(data, indent=indent, sort_keys=sort_keys))
+    response = make_response(json.dumps(
+        data, indent=indent, sort_keys=sort_keys))
     response.headers['Content-Type'] = 'application/json; charset=utf-8'
     response.headers['mimetype'] = 'application/json'
     response.headers['Access-Control-Allow-Origin'] = '*'
@@ -57,10 +60,7 @@ def cypher_api():
 
 @app.route('/api/sparql', methods=('GET', 'POST'))
 def sparql_api():
-    if app.config["sparql-proxy"]:
-        return app.config["sparql-proxy"].request(request)
-    else:
-        raise ApiError("SPARQL not configured!", 503)
+    return app.config["sparql-proxy"].request(request)
 
 
 @app.route('/cypher')
@@ -95,7 +95,7 @@ if __name__ == '__main__':
             msg = "Error in %s" % (args.config)
             if hasattr(err, 'problem_mark'):
                 mark = err.problem_mark
-                msg += " at line %s char %s" % (mark.line+1, mark.column+1)
+                msg += " at line %s char %s" % (mark.line + 1, mark.column + 1)
             print(msg, file=sys.stderr)
             sys.exit(1)
 
@@ -103,7 +103,8 @@ if __name__ == '__main__':
         app.config[key] = config[key]
     app.config["cypher-backend"] = CypherBackend(config['cypher'])
     endpoint = config["sparql"]["endpoint"]
-    app.config["sparql-proxy"] = SparqlProxy(endpoint) if endpoint else None
+    app.config["sparql-proxy"] = SparqlProxy(
+        endpoint, args.debug) if endpoint else None
 
     if args.wsgi:
         serve(app, host="0.0.0.0", **opts)

@@ -34,6 +34,16 @@ sparql:
       query: |
         SELECT (COUNT(*) as ?triples) 
         WHERE { ?s ?p ?o } 
+    - name: List all named graphs with metadata
+      query: |
+        PREFIX dct: <http://purl.org/dc/terms/>
+        SELECT ?graph ?title ?source ?issued
+        WHERE {
+          GRAPH ?graph { }
+          OPTIONAL { ?graph dct:title ?title }
+          OPTIONAL { ?graph dct:source ?source }  
+          OPTIONAL { ?graph dct:issued ?issued }
+        }
 ~~~
 
 Set `endpoint` to `null` to disable SPARQL API.

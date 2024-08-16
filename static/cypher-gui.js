@@ -1,13 +1,17 @@
-async function cypherQuery(api, query) {
-  return fetch(api, { method: "POST", body: query }).then(res => res.json())
-}
-
 function showCypherResult(result, elem) {
+  elem.innerHTML = ''
+
+  // TODO: show duration
+    
   if (!Array.isArray(result)) {
-    elem.innerHTML = "Invalid response!"
+    $(`<div class="errorResult"><div class="redOutline">
+    <p>Unable to get response from endpoint. Possible reasons:</p>
+    <ul>
+      <li>Endpoint is down</li>
+    </ul>
+    </div></div>`).appendTo(elem)
     return
   } 
-  elem.innerHTML = ''
 
   if (!result.length) return
 
@@ -49,9 +53,89 @@ function showCypherResult(result, elem) {
   new DataTable(table)
 }
 
+class CypherEditor extends CodeMirror {
+    constructor(elem, config) {
+        config.mode = 'cypher'
+        super(elem, config)
+    
+        this.endpoint = config.endpoint
+
+        const buttons = $(`<div class="yasqe_buttons" />`)
+        const queryBtn = $(`<button class="yasqe_queryButton" title="Run query" aria-label="Run query" >Run query</button>`)
+        buttons.append(queryBtn)
+    /*
+          const queryEl = drawSvgStringAsElement(imgs.query);
+          addClass(queryEl, "queryIcon");
+          this.queryBtn.appendChild(queryEl);
+          */
+        queryBtn.on('click', () => { this.query() })
+      
+        //  this.updateQueryButton()
+
+        buttons.appendTo(this.getWrapperElement())
+
+        this.on("query", this.handleQuery)
+        this.on("queryResponse", this.handleQueryResponse)
+        this.on("queryAbort", this.handleQueryAbort)
+    }
+
+    handleQuery(editor, req) {
+        editor.req = req
+        // editor.updateQueryButton()
+    }
+  
+    handleQueryResponse(editor, res, duration) {
+        console.log("QUERY RESPONSE")
+        editor.lastQueryDuration = duration
+        editor.req = undefined
+        // editor.updateQueryButton()
+    }
+  
+    handleQueryAbort(editor, req) {
+        editor.req = undefined
+        // this.updateQueryButton()
+    }
+
+    abortQuery() {
+        if (this.req) {
+            // this.req.abort(); TODO
+            this.emit("queryAbort", this.req);
+        }
+    }
+
+    async query() {
+        if (this.req) {
+            this.abortQuery()
+            return
+        }
+
+        const cypher = this.getValue()
+        const queryStart = Date.now()
+
+        this.emit("query", cypher)
+
+        return fetch(this.endpoint, { method: "POST", body: cypher })
+          .then(res => res.json())
+          .then(res => { this.emit("queryResponse", res, Date.now() - queryStart) })
+          .catch(e => {
+              // (if (e instanceof Error && e.message === "Aborted") { TODO: don't do anything
+              console.error(e)
+              this.emit("queryResponse", null, Date.now() - queryStart) 
+          })
+    }
+
+    emit(name, ...data) {
+        CodeMirror.signal(this, name, this, ...data)
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  var editor = CodeMirror.fromTextArea(document.getElementById('cypherform'), {
-    mode: 'cypher',
+  const textarea = document.getElementById('cypherform')
+  const editor = new CypherEditor(e => textarea.parentNode.replaceChild(e, textarea), {
+    endpoint: "/api/cypher",
+
+    // CodeMirror:
+    value: textarea.value,
     indentWithTabs: true,
     smartIndent: true,
     lineNumbers: true,
@@ -60,26 +144,14 @@ document.addEventListener('DOMContentLoaded', () => {
     theme: "default"
   })
 
-  const form = document.getElementById('cypherForm')
   const resultElem = document.getElementById('cypherResult')
-  const cypherApi = "/api/cypher"
 
-  const submit = async () => {
-    const fields = Object.fromEntries(new FormData(form))
-    cypherQuery(cypherApi, fields.query).then(result => {
-      showCypherResult(result, resultElem)
-    })
-  }
-
-  form.addEventListener('submit', async e => {
-    e.preventDefault()
-    resultElem.innerHTML = ''
-    submit()  
-    return
+  editor.on("queryResponse", (editor, res) => {
+    showCypherResult(res, resultElem)
   })
 
   $('#examples').on('change', e => {
     editor.setValue(e.target.value)
-    submit()
+    editor.query()
   })
 })

@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const editor = new Yasqe(document.getElementById("yasqe"), {
-    requestOpts: {
+    requestConfig: {
       endpoint: "/api/sparql",
       method: "POST",
     },
@@ -17,4 +17,4 @@ document.addEventListener('DOMContentLoaded', () => {
     editor.setValue(e.target.value)
     editor.query()
   })
-}
+})

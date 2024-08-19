@@ -25,7 +25,7 @@ cypher:
     - name: List all classes (= node labels)
       query: "MATCH (n)\n RETURN distinct labels(n) AS classes, count(*) AS count"
 sparql:
-  endpoint: "http://dbpedia.org/query"
+  endpoint: "https://dbpedia.org/sparql"
   examples:
     - name: List all classes
       query: |

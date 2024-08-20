@@ -2,14 +2,14 @@
 
 > API and minimal web interface to [NFDI4Objects Knowledge Graph](https://nfdi4objects.github.io/n4o-graph/).
 
-This repository implements a public web API to the NFDI4Objects Knowledge Graph. See the [Knowledge Graph Manual](https://nfdi4objects.github.io/n4o-graph/) (in German) for details.
+This repository implements public web APIs to the NFDI4Objects Knowledge Graph. The Knowledge Graph internally consists of an RDF Triple Store and a Labeled Property Graph. These databases can be queried [with SPARQL(#sparql-api) and [with Cypher](#property-graph-api) respectively using the API endpoints provided by this web application. For background information see the [Knowledge Graph Manual](https://nfdi4objects.github.io/n4o-graph/) (in German).
 
 ## Table of Contents
 
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#usage)
-  - [SPARQL API](#sparql)
+  - [SPARQL API](#sparql-api)
   - [Property Graph API](#property-graph-api)
 - [Development](#development)
 - [License](#license)
@@ -23,7 +23,6 @@ Required Python modules are listed in `requirements.txt`. Use [deployment method
 A local file `config.yaml` is needed with configuration. Use this as boilerplate:
 
 ~~~yaml
----
 cypher: 
   uri: "bolt://localhost:7687"
   user: ""

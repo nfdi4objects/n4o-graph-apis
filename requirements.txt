@@ -7,3 +7,7 @@ waitress
 pytest
 requests
 pyyaml
+
+# development
+flake8
+autopep8

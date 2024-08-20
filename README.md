@@ -65,12 +65,48 @@ This webservice implements [SPARQL query API](https://www.w3.org/TR/2013/REC-spa
 
 ### Property Graph API
 
-The Property Graph API at `/api/cypher` expects a HTTP GET query parameter `query` with a CYPHER query and returns a (possibly empty) JSON array of result objects on success. On failure, an error object is returned. Each response objects is maps query variables to values. Each value is one of:
+The Property Graph API at `/api/cypher` expects a HTTP GET query parameter `query` with a Cypher query or a HTTP POST request with a Cypher query as request body. The return format is a (possibly empty) JSON array of result objects. On failure, an error object is returned. Each response objects is maps query variables to values. Each value is one of:
 
 - number, string, boolean, or null
 - array of values
 - [PG-JSONL](https://pg-format.github.io/specification/#pg-json) node or edge object for nodes and edges
 - [PG-JSON](https://pg-format.github.io/specification/#pg-jsonl) graph object for pathes
+
+The following examples use n4o-graph-apis application running at <https://graph.gbv.de/> for illustration. This URL will be changed! Use base URL
+<http://localhost:8000/> for testing a local installation.
+
+#### Query with Python
+
+```python
+import requests
+import json
+
+api = "https://graph.gbv.de/api/cypher"
+query = 'MATCH (m:E16_Measurement) RETURN m LIMIT 2'
+results = requests.get(api, { "query": query }).json()
+```
+
+#### Query with JavaScript
+
+```js
+const api = "https://graph.gbv.de/api/cypher"
+const query = 'MATCH (m:E16_Measurement) RETURN m LIMIT 2'
+results = await fetch(api, { query }).then(res => res.json())
+```
+
+#### Query with curl
+
+The Cypher query must be URL-escaped, this is done by using argument [--data-urlencode](https://curl.se/docs/manpage.html#--data-urlencode):
+
+```sh
+curl -G https://graph.gbv.de/api/cypher --data-urlencode 'query=MATCH (m:E16_Measurement) RETURN m LIMIT 2'
+```
+
+The Cypher query can also be passed from a file:
+
+```sh
+curl -G https://graph.gbv.de/api/cypher --data-urlencode 'query@queryfile.cypher'
+```
 
 ## Development
 

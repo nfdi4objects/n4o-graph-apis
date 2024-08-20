@@ -4,9 +4,19 @@
 
 This repository implements a public web API to the NFDI4Objects Knowledge Graph. See the [Knowledge Graph Manual](https://nfdi4objects.github.io/n4o-graph/) (in German) for details.
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+  - [SPARQL API](#sparql)
+  - [Property Graph API](#property-graph-api)
+- [Development](#development)
+- [License](#license)
+
 ## Installation
 
-Required Python modules are listed in `requirements.txt`. Use [deployment method of your choice](https://flask.palletsprojects.com/en/2.0.x/deploying/#self-hosted-options). The application must be [configured](#configuration) first.
+Required Python modules are listed in `requirements.txt`. Use [deployment method of your choice](https://flask.palletsprojects.com/en/2.0.x/deploying/#self-hosted-options). The application must be configured first.
 
 ## Configuration
 
@@ -46,8 +56,6 @@ sparql:
         }
 ~~~
 
-Set `endpoint` to `null` to disable SPARQL API.
-
 Make sure the Neo4j (or compatible) database is read-only because this application does not guarantee to filter out write queries!
 
 ## Usage
@@ -56,9 +64,9 @@ Make sure the Neo4j (or compatible) database is read-only because this applicati
 
 This webservice implements [SPARQL query API](https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/#query-operation) at `/api/sparl`. The query is transformed to a POST request and passed to the backend SPARQL endpoint.
 
-### Cypher Propert Graph API
+### Property Graph API
 
-The property graph API at `/api/cypher` expects a HTTP GET query parameter `query` with a CYPHER query and returns a (possibly empty) JSON array of result objects on success. On failure, an error object is returned. Each response objects is maps query variables to values. Each value is one of:
+The Property Graph API at `/api/cypher` expects a HTTP GET query parameter `query` with a CYPHER query and returns a (possibly empty) JSON array of result objects on success. On failure, an error object is returned. Each response objects is maps query variables to values. Each value is one of:
 
 - number, string, boolean, or null
 - array of values

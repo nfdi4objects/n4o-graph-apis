@@ -102,9 +102,7 @@ if __name__ == '__main__':
     for key in config.keys():
         app.config[key] = config[key]
     app.config["cypher-backend"] = CypherBackend(config['cypher'])
-    endpoint = config["sparql"]["endpoint"]
-    app.config["sparql-proxy"] = SparqlProxy(
-        endpoint, args.debug) if endpoint else None
+    app.config["sparql-proxy"] = SparqlProxy(config["sparql"]["endpoint"], args.debug)
 
     if args.wsgi:
         serve(app, host="0.0.0.0", **opts)

@@ -82,7 +82,7 @@ import requests
 import json
 
 api = "https://graph.gbv.de/api/cypher"
-query = 'MATCH (m:E16_Measurement) RETURN m LIMIT 2'
+query = "MATCH (m:E16_Measurement) RETURN m LIMIT 2"
 results = requests.get(api, { "query": query }).json()
 ```
 
@@ -90,7 +90,7 @@ results = requests.get(api, { "query": query }).json()
 
 ```js
 const api = "https://graph.gbv.de/api/cypher"
-const query = 'MATCH (m:E16_Measurement) RETURN m LIMIT 2'
+const query = "MATCH (m:E16_Measurement) RETURN m LIMIT 2"
 results = await fetch(api, { query }).then(res => res.json())
 ```
 

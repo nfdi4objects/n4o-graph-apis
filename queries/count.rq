@@ -1,3 +1,4 @@
 # Get number of triples
+
 SELECT (COUNT(*) as ?triples) 
 WHERE { ?s ?p ?o } 

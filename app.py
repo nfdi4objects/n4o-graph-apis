@@ -1,5 +1,7 @@
 import json
 import yaml
+import glob
+import re
 import sys
 from flask import Flask, render_template, request, make_response
 from waitress import serve
@@ -73,6 +75,20 @@ def sparql_form():
     return render_template('sparql.html', **config["sparql"])
 
 
+def extend_examples(examples):
+    extended = []
+    for ex in examples:
+        if isinstance(ex, str):
+            for file in glob.glob(ex):
+                lines = open(file).read().split("\n")
+                name = re.sub(r"^#\s*", "", lines[0])
+                query = "\n".join(lines[2:])
+                extended.append({"name": name, "query": query})
+        else:
+            extended.append(ex)
+    return extended
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--port', type=int,
@@ -98,6 +114,10 @@ if __name__ == '__main__':
                 msg += " at line %s char %s" % (mark.line + 1, mark.column + 1)
             print(msg, file=sys.stderr)
             sys.exit(1)
+        config["sparql"]["examples"] = extend_examples(
+            config["sparql"]["examples"])
+        config["cypher"]["examples"] = extend_examples(
+            config["cypher"]["examples"])
 
     for key in config.keys():
         app.config[key] = config[key]

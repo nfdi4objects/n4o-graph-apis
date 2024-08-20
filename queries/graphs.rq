@@ -1,0 +1,4 @@
+# Get all named graphs with number of triples each
+SELECT ?graph (count(*) as ?triples) {
+  GRAPH ?graph {?s ?p ?o}
+} GROUP BY ?graph

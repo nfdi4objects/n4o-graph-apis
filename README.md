@@ -36,23 +36,10 @@ cypher:
 sparql:
   endpoint: "https://dbpedia.org/sparql"
   examples:
+    - queries/*.rq
     - name: List all classes
       query: |
-        SELECT DISTINCT ?class WHERE { [] a ?class }
-    - name: Get number of triples
-      query: |
-        SELECT (COUNT(*) as ?triples) 
-        WHERE { ?s ?p ?o } 
-    - name: List all named graphs with metadata
-      query: |
-        PREFIX dct: <http://purl.org/dc/terms/>
-        SELECT DISTINCT ?graph ?title ?source ?issued
-        WHERE {
-          GRAPH ?graph { }
-          OPTIONAL { ?graph dct:title ?title }
-          OPTIONAL { ?graph dct:source ?source }  
-          OPTIONAL { ?graph dct:issued ?issued }
-        }
+        SELECT DISTINCT ?class WHERE { [] a ?class }  examples:
 ~~~
 
 Make sure the Neo4j (or compatible) database is read-only because this application does not guarantee to filter out write queries!

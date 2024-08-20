@@ -1,0 +1,14 @@
+# List all research data collections
+
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX schema: <http://schema.org/>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX n4oc: <https://graph.nfdi4objects.net/collection/>
+
+SELECT ?collection ?name ?url ?repository FROM n4oc: WHERE {  
+  ?collection dct:isPartOf n4oc: .
+  OPTIONAL { ?collection schema:name ?name }
+  OPTIONAL { ?collection foaf:homepage ?url }
+  OPTIONAL { ?db dcat:dataset ?collection . ?db schema:name ?repository }
+}

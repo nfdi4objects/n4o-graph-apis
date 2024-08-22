@@ -1,0 +1,9 @@
+# CIDOC-CRM classes with their use
+
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+
+SELECT ?collection ?class (COUNT(?s) AS ?count) WHERE { 
+  GRAPH ?collection { ?s a ?class }
+  FILTER strStarts(str(?class), "http://www.cidoc-crm.org/")
+} GROUP BY ?collection ?class
+ORDER BY ?class DESC(?count)

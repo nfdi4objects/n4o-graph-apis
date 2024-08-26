@@ -2,7 +2,9 @@
 
 > API and minimal web interface to [NFDI4Objects Knowledge Graph](https://nfdi4objects.github.io/n4o-graph/).
 
-This repository implements public web APIs to the NFDI4Objects Knowledge Graph. The Knowledge Graph internally consists of an RDF Triple Store and a Labeled Property Graph. These databases can be queried [with SPARQL(#sparql-api) and [with Cypher](#property-graph-api) respectively using the API endpoints provided by this web application. For background information see the [Knowledge Graph Manual](https://nfdi4objects.github.io/n4o-graph/) (in German).
+This repository implements public web APIs to the NFDI4Objects Knowledge Graph. The Knowledge Graph internally consists of an RDF Triple Store and a Labeled Property Graph. These databases can be queried [with SPARQL(#sparql-api) and [with Cypher](#property-graph-api) respectively using the API endpoints provided by this web application. In addition, collection URIs starting with <https://graph.nfdi4objects.net/collection/> are served as linked open data from the triple store.
+
+For background information see the [Knowledge Graph Manual](https://nfdi4objects.github.io/n4o-graph/) (in German).
 
 ## Table of Contents
 
@@ -11,6 +13,7 @@ This repository implements public web APIs to the NFDI4Objects Knowledge Graph. 
 - [Usage](#usage)
   - [SPARQL API](#sparql-api)
   - [Property Graph API](#property-graph-api)
+  - [Linked Open Data](#linked-open-data)
 - [Development](#development)
 - [License](#license)
 
@@ -94,6 +97,16 @@ The Cypher query can also be passed from a file:
 ```sh
 curl -G https://graph.gbv.de/api/cypher --data-urlencode 'query@queryfile.cypher'
 ```
+
+### Linked Open Data
+
+Information about collections, each identified by an URI starting with <https://graph.nfdi4objects.net/collection/>, can be retrieved as Linked Open Data (LOD) at path `/collection` in HTML and in RDF serializations. The data is retrieved via [SPARQL API](#sparql-api), so retrieving <https://graph.nfdi4objects.net/collection/1> results in the same data as this SPARQL query from graph <https://graph.nfdi4objects.net/collection>:
+
+~~~sparql
+DESCRIBE <https://graph.nfdi4objects.net/collection/1> FROM <https://graph.nfdi4objects.net/collection/>
+~~~
+
+The RDF serialization is determined via HTTP Content Negotiation or with optional query parameter `format`.
 
 ## Development
 

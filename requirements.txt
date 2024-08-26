@@ -9,6 +9,7 @@ requests
 pyyaml
 rdflib
 SPARQLWrapper
+python-mimeparse
 
 # development
 flake8

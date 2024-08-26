@@ -6,6 +6,8 @@ import sys
 from flask import Flask, render_template, request, make_response
 from waitress import serve
 import argparse
+import mimeparse
+import traceback
 from rdflib import URIRef
 
 from app import CypherBackend, SparqlProxy, ApiError
@@ -33,6 +35,8 @@ def handle_api_error(error):
 
 @app.errorhandler(Exception)
 def handle_exception(error):
+    if app.config["debug"]:
+        print(traceback.format_exc())
     if hasattr(error, 'message'):
         message = error.message
     else:
@@ -48,6 +52,21 @@ def index():
 @app.context_processor
 def utility_processor():
     return dict(URIRef=URIRef)
+
+
+rdf_formats = {
+    'application/x-turtle': 'turtle',
+    'text/turtle': 'turtle',
+    'application/rdf+xml': 'xml',
+    'application/trix': 'trix',
+    'application/n-quads': 'nquads',
+    'application/n-triples': 'nt',
+    'text/n-triples': 'nt',
+    'text/rdf+nt': 'nt',
+    'application/n3': 'n3',
+    'text/n3': 'n3',
+    'text/rdf+n3': 'n3'
+}
 
 
 @app.route('/collection', defaults={'id': None})
@@ -67,15 +86,29 @@ def collection(id):
             else:
                 return render_template('collection.html', uri=uri, graph=None), 404
         else:
-            # TODO: get format from request header
+            mimetype = "text/plain"
+            if format in set(rdf_formats.values()):
+                mimetype = [
+                    type for type in rdf_formats if rdf_formats[type] == format][0]
+            else:
+                accept = request.headers.get("Accept")
+                types = list(rdf_formats.keys())
+                mimetype = mimeparse.best_match(types, accept)
+                if mimetype in rdf_formats:
+                    format = rdf_formats[mimetype]
+                else:
+                    format = "turtle"
+                    mimetype = "text/turtle"
+
+            print("Format, mimetype")
+            print(format, mimetype)
+
             response = make_response("Not found", 404)
             response.mimetype = "text/plain"
             if len(graph) > 0:
-                # TODO: support more serializations
                 # TODO: add known namespaces for pretty Turtle
-                format = "turtle"
                 response = make_response(graph.serialize(format=format), 200)
-                response.mimetype = "text/turtle"
+                response.mimetype = mimetype
             return response
 
     else:
@@ -162,6 +195,7 @@ if __name__ == '__main__':
     app.config["cypher-backend"] = CypherBackend(config['cypher'])
     app.config["sparql-proxy"] = SparqlProxy(
         config["sparql"]["endpoint"], args.debug)
+    app.config["debug"] = args.debug
 
     if args.wsgi:
         serve(app, host="0.0.0.0", **opts)

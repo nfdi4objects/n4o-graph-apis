@@ -44,6 +44,16 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/collection', defaults={'id': None})
+@app.route('/collection/<int:id>')
+def collection(id):
+    if id:
+        # TODO: retrieve data from backend
+        return render_template('collection.html')
+    else:
+        return render_template('collections.html')
+
+
 @app.route('/api/cypher', methods=('GET', 'POST'))
 def cypher_api():
     query = ''

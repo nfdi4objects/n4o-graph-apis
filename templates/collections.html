@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+ 
+{% block content %}
+
+<p>
+  A collection is an individual set of research data imported into the knowledge graph.
+  Some collections are part of a research data repository.
+  The current triple store contains the following collections:
+</p>
+<table id="collections">
+  <thead>
+    <tr>
+      <th>Collection</th>
+      <th>Repository</th>
+      <th>Source</th>
+    </tr>
+  </thead>
+</table>
+
+<script>
+
+const sparql = query => fetch('/api/sparql?' + new URLSearchParams({query}))
+  .then(res => res.json())
+  .then(res => res.results.bindings)
+
+$(document).ready(() => {
+  const query = `PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX schema: <http://schema.org/>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX n4oc: <https://graph.nfdi4objects.net/collection/>
+
+SELECT ?collection ?name ?url ?repository FROM n4oc: WHERE {  
+  ?collection dct:isPartOf n4oc: .
+  OPTIONAL { ?collection schema:name ?name }
+  OPTIONAL { ?collection foaf:homepage ?url }
+  OPTIONAL { ?db dcat:dataset ?collection . ?db schema:name ?repository }
+}`
+  const tbody = $('<tbody>')
+  sparql(query).then(res => {
+    res.forEach( ({collection, name, url, repository}) => {
+      const href = collection.value.substr(30) // URI path
+      const a = $('<a>').attr('href',href).text(name.value || collection.value)
+      const row = $('<tr>')
+      row.append($('<td>').append(a))
+      row.append($('<td>').text(repository?.value))
+      if (url) {
+        url = $('<a>').attr('href',url.value).text(url.value)
+        row.append($('<td>').append(url))
+      } else {
+        row.append($('<td>'))
+      }
+      tbody.append(row)
+    })
+    $("#collections").append(tbody)
+  })
+})
+</script>
+
+{% endblock %}

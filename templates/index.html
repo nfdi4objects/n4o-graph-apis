@@ -5,21 +5,33 @@
     This page provides API prototype to the 
     <b>NFDI4Objects Knowledge Graph</b>. The
     Knowledge Graph consists of two databases
-    with individual API each:
+    with individual APIs each:
   </p>
   <ul>
     <li>
       <p>
-      an RDF triple store with <a href="https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/#query-operation">SPARQL query API</a>
-      at <code>/api/sparql</code>.</p>
-      <p><b><a href="sparql">try online</a></b></p>
+        an <b><a href="sparql">RDF triple store</a></b>
+        with <a href="https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/#query-operation">SPARQL query API</a>
+        at <code>/api/sparql</code>
+      </p>
     </li>
     <li>
       <p>
-        a labeled property graph with <a href="https://github.com/nfdi4objects/n4o-graph-apis#cypher-property-graph-api">Cypher Property Graph API</a>
-        at <code>/api/cypher</code>.
-      </p><p>
-        <b><a href="cypher">try online</a></b>
+        a <b><a href="cypher">labeled property graph</a></b>
+        with <a href="https://github.com/nfdi4objects/n4o-graph-apis#cypher-property-graph-api">Cypher Property Graph API</a>
+        at <code>/api/cypher</code>
+      </p>
+    </li>
+  </ul>
+  <p>
+    In addition data can be retrieved
+  </p>
+  <ul>
+    <li>
+      <p>
+        as <b><a href="collection">Linked Open Data (LOD)</a></b>
+        for URIs in the <code>https://graph.nfdi4objects.net/collection/</code>
+        (n4oc) namespace
       </p>
     </li>
   </ul>

@@ -1,14 +1,24 @@
 {% extends 'base.html' %}
  
 {% block content %}
-
+{% if graph == None %}
+  <p>The collection <b>{{uri}}</b> has not been found in the triple store!</p>
+{% else %}
 <p>
-  This is a landing page for a research data set.
+    This is a landing page for the research data set collection <b>{{uri}}</b>.
 </p>
-<script>
+<!-- TODO: show name, timestamp -->
+<ul>
+{% for p in graph.triples((URIRef(uri),None,None)) %}
+<li>{{p[1]}} {{p[2]}}</li>
+{% endfor %}
+</ul>
+<!--script>
+// TODO: load size of the corresponding graph
 const sparql = query => fetch('/api/sparql?' + new URLSearchParams({query}))
   .then(res => res.json())
   .then(res => res.results.bindings)
-</script>
+</script-->
+{% endif %}
 
 {% endblock %}

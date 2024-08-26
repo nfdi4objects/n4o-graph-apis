@@ -16,6 +16,13 @@ header > h1, header > nav {
 }
 
 p { margin-block-start: 0em; }
+nav > ul > li {
+  font-size: 1.8em;
+  display: inline;
+}
+nav > ul > li:not(:last-child)::after {
+  content: " | ";
+}
 nav > ul > li > a.selected {
   font-weight: bold;
 }

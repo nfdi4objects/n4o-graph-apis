@@ -7,6 +7,8 @@ waitress
 pytest
 requests
 pyyaml
+rdflib
+SPARQLWrapper
 
 # development
 flake8

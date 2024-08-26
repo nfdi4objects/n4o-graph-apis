@@ -3,15 +3,19 @@ import requests
 from flask import Response
 from .error import ApiError
 
+from SPARQLWrapper import SPARQLWrapper
+
 
 class SparqlProxy:
 
     def __init__(self, api, debug=False):
         self.api = api
+        self.wrapper = SPARQLWrapper(api)
         self.debug = debug
 
-    def request(self, request):
-        # https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/#query-operation
+    def proxyRequest(self, request):
+
+        # see https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/#query-operation
         if request.method == "GET":
             query = request.args.get("query", "")
         elif request.method == "POST":
@@ -34,9 +38,9 @@ class SparqlProxy:
                 params[name] = request.values[name]
 
         # TODO: Set X-Forwarded-For and add more request headers?
-
         allowed = ["Accept", "Accept-Encoding", "Accept-Language"]
         headers = {k: v for k, v in request.headers.items() if k in allowed}
+
         headers["Content-Type"] = "application/sparql-query"
 
         # Some clients and servers disagree about meaning of not setting this server
@@ -59,3 +63,12 @@ class SparqlProxy:
         out = Response(generate(), headers=headers)
         out.status_code = res.status_code
         return out
+
+    def request(self, query, params):
+        self.wrapper.setQuery(query)
+        for name in ["default-graph-uri", "named-graph-uri"]:
+            if name in params:
+                self.wrapper.addParameter(name, params[name])
+            else:
+                self.wrapper.clearParameter(name)
+        return self.wrapper.queryAndConvert()

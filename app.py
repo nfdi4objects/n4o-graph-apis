@@ -6,6 +6,7 @@ import sys
 from flask import Flask, render_template, request, make_response
 from waitress import serve
 import argparse
+from rdflib import URIRef
 
 from app import CypherBackend, SparqlProxy, ApiError
 
@@ -44,12 +45,39 @@ def index():
     return render_template('index.html')
 
 
+@app.context_processor
+def utility_processor():
+    return dict(URIRef=URIRef)
+
+
 @app.route('/collection', defaults={'id': None})
 @app.route('/collection/<int:id>')
 def collection(id):
     if id:
-        # TODO: retrieve data from backend
-        return render_template('collection.html')
+        format = request.args.get("format")
+
+        uri = "https://graph.nfdi4objects.net/collection/" + str(id)
+        graph = app.config["sparql-proxy"].request(
+            "DESCRIBE <" + uri + ">",
+            {"named-graph-uri": "https://graph.nfdi4objects.net/collection/"})
+
+        if "html" in request.headers["Accept"] or format == "html":
+            if len(graph) > 0:
+                return render_template('collection.html', uri=uri, graph=graph)
+            else:
+                return render_template('collection.html', uri=uri, graph=None), 404
+        else:
+            # TODO: get format from request header
+            response = make_response("Not found", 404)
+            response.mimetype = "text/plain"
+            if len(graph) > 0:
+                # TODO: support more serializations
+                # TODO: add known namespaces for pretty Turtle
+                format = "turtle"
+                response = make_response(graph.serialize(format=format), 200)
+                response.mimetype = "text/turtle"
+            return response
+
     else:
         return render_template('collections.html')
 
@@ -72,7 +100,7 @@ def cypher_api():
 
 @app.route('/api/sparql', methods=('GET', 'POST'))
 def sparql_api():
-    return app.config["sparql-proxy"].request(request)
+    return app.config["sparql-proxy"].proxyRequest(request)
 
 
 @app.route('/cypher')

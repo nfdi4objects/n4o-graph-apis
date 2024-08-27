@@ -3,11 +3,26 @@
 {% block content %}
 
 <p>
-  Collection URIs starting with
-  <code>https://graph.nfdi4objects.net/collection/</code>
-  can be retrieved as Linked Open Data (LOD).
   A collection is an individual set of research data imported into the knowledge graph.
-  Some collections are part of a research data repository.
+  Each collection is identified by an URI starting with
+  <code>https://graph.nfdi4objects.net/collection/</code>.
+</p>
+<p>
+  Some collections consist of individual records and some collections are part of a larger
+  <a data-sparql="PREFIX schema: <http://schema.org/>
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+
+SELECT ?repository (SAMPLE(?n) AS ?name) FROM <https://graph.nfdi4objects.net/collection/> {
+  ?repository dcat:dataset []; schema:name ?n
+} GROUP BY ?repository">research data repository</a>.
+</p>
+<p>
+  Information <em>about</em> collections is stored in the
+  named graph <a data-sparql="SELECT * FROM &lt;https://graph.nfdi4objects.net/collection/&gt; {
+ ?subject ?predicate ?object
+}">https://graph.nfdi4objects.net/collection/</a>.
+</p>
+<p>
   The current triple store contains the following collections:
 </p>
 <table id="collections">
@@ -21,10 +36,6 @@
 </table>
 
 <script>
-const sparql = query => fetch('/api/sparql?' + new URLSearchParams({query}))
-  .then(res => res.json())
-  .then(res => res.results.bindings)
-
 $(document).ready(() => {
   const query = `PREFIX dcat: <http://www.w3.org/ns/dcat#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>

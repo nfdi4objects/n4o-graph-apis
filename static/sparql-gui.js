@@ -17,4 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
     editor.setValue(e.target.value)
     editor.query()
   })
+
+  if (window.location.hash?.startsWith("#query=")) {
+    editor.query()
+  }
 })

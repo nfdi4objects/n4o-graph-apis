@@ -4,17 +4,17 @@
 {% if graph == None %}
   <p>The collection <b>{{uri}}</b> has not been found in the triple store!</p>
 {% else %}
+<h2>{{ graph.objects(URIRef(uri), URIRef("http://schema.org/name")).__next__() }}</h2>
 <p>
-    This is a landing page for the research data set collection <b>{{uri}}</b>.
+  This is a landing page for the research data set collection <b>{{uri}}</b>.
 </p>
-<!-- TODO: show name, timestamp -->
-<ul>
-{% for p in graph.triples((URIRef(uri),None,None)) %}
-<li>{{p[1]}} {{p[2]}}</li>
-{% endfor %}
-</ul>
+<p>
+  Please use SPARQL to get more information
+  <a href="/sparql#query=DESCRIBE%20%3C{{uri}}%3E">about the collection</a>
+  such as 
+  <a href="http://127.0.0.1:8000/sparql#query=SELECT%20%28COUNT%28%2A%29%20as%20%3Ftriples%29%20FROM%20%3C{{uri}}%3E%20%7B%3Fs%20%3Fp%20%3Fo%7D%0A">number of triples</a>.
+  <!-- TODO: live timestamp, number of triples, most used classes and properties... -->
 <!--script>
-// TODO: load size of the corresponding graph
 const sparql = query => fetch('/api/sparql?' + new URLSearchParams({query}))
   .then(res => res.json())
   .then(res => res.results.bindings)

@@ -62,7 +62,7 @@ The Property Graph API at `/api/cypher` expects a HTTP GET query parameter `quer
 - [PG-JSONL](https://pg-format.github.io/specification/#pg-json) node or edge object for nodes and edges
 - [PG-JSON](https://pg-format.github.io/specification/#pg-jsonl) graph object for pathes
 
-The following examples use n4o-graph-apis application running at <https://graph.gbv.de/> for illustration. This URL will be changed! Use base URL
+The following examples use n4o-graph-apis application running at <https://graph.nfdi4objects.net/> for illustration. This URL will be changed! Use base URL
 <http://localhost:8000/> for testing a local installation.
 
 #### Query with Python
@@ -71,7 +71,7 @@ The following examples use n4o-graph-apis application running at <https://graph.
 import requests
 import json
 
-api = "https://graph.gbv.de/api/cypher"
+api = "https://graph.nfdi4objects.net/api/cypher"
 query = "MATCH (m:E16_Measurement) RETURN m LIMIT 2"
 results = requests.get(api, { "query": query }).json()
 ```
@@ -79,7 +79,7 @@ results = requests.get(api, { "query": query }).json()
 #### Query with JavaScript
 
 ```js
-const api = "https://graph.gbv.de/api/cypher"
+const api = "https://graph.nfdi4objects.net/api/cypher"
 const query = "MATCH (m:E16_Measurement) RETURN m LIMIT 2"
 results = await fetch(api, { query }).then(res => res.json())
 ```
@@ -89,13 +89,13 @@ results = await fetch(api, { query }).then(res => res.json())
 The Cypher query must be URL-escaped, this is done by using argument [--data-urlencode](https://curl.se/docs/manpage.html#--data-urlencode):
 
 ```sh
-curl -G https://graph.gbv.de/api/cypher --data-urlencode 'query=MATCH (m:E16_Measurement) RETURN m LIMIT 2'
+curl -G https://graph.nfdi4objects.net/api/cypher --data-urlencode 'query=MATCH (m:E16_Measurement) RETURN m LIMIT 2'
 ```
 
 The Cypher query can also be passed from a file:
 
 ```sh
-curl -G https://graph.gbv.de/api/cypher --data-urlencode 'query@queryfile.cypher'
+curl -G https://graph.nfdi4objects.net/api/cypher --data-urlencode 'query@queryfile.cypher'
 ```
 
 ### Linked Open Data

@@ -100,13 +100,15 @@ curl -G https://graph.nfdi4objects.net/api/cypher --data-urlencode 'query@queryf
 
 ### Linked Open Data
 
-Information about collections, each identified by an URI starting with <https://graph.nfdi4objects.net/collection/>, can be retrieved as Linked Open Data (LOD) at path `/collection` in HTML and in RDF serializations. The data is retrieved via [SPARQL API](#sparql-api), so retrieving <https://graph.nfdi4objects.net/collection/1> results in the same data as this SPARQL query from graph <https://graph.nfdi4objects.net/collection>:
+Information about collections, each identified by an URI starting with <https://graph.nfdi4objects.net/collection/>, can be retrieved as Linked Open Data (LOD) at path `/collection` in HTML and in RDF serializations. The data is retrieved via [SPARQL API](#sparql-api), so retrieving <https://graph.nfdi4objects.net/collection/1> results in the same data as this SPARQL query from graph <https://graph.nfdi4objects.net/collection/>:
 
 ~~~sparql
 DESCRIBE <https://graph.nfdi4objects.net/collection/1> FROM <https://graph.nfdi4objects.net/collection/>
 ~~~
 
 The RDF serialization is determined via HTTP Content Negotiation or with optional query parameter `format`.
+
+Information about terminologies will be made available from <https://graph.nfdi4objects.net/terminology/>.
 
 ## Development
 

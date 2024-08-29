@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+ 
+{% block content %}
+
+<p>
+  The named graph
+  <code>https://graph.nfdi4objects.net/terminology/</code>
+  contains information about N4O Terminologies, originally managed
+  <a href="https://bartoc.org/en/node/18961">in BARTOC</a>.
+  Some terminologies are also hosted fully or partially as part of the
+  N4O graph.
+</p>
+<p>
+  Try
+    <a data-sparql="PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?voc (SAMPLE(?names) as ?name) FROM <https://graph.nfdi4objects.net/terminology/> {
+  ?voc a skos:ConceptScheme .
+  ?voc skos:prefLabel ?names
+} GROUP BY ?voc">this query</a>
+    to get a list of vocabularies.
+</p>
+
+{% endblock %}

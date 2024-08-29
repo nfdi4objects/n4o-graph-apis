@@ -68,8 +68,14 @@ rdf_formats = {
     'text/rdf+n3': 'n3'
 }
 
+@app.route('/terminology')
+@app.route('/terminology/')
+def terminology():
+    # TODO: server RDF as well
+    return render_template('terminologies.html')
 
 @app.route('/collection', defaults={'id': None})
+@app.route('/collection/', defaults={'id': None})
 @app.route('/collection/<int:id>')
 def collection(id):
     if id:
@@ -112,6 +118,7 @@ def collection(id):
             return response
 
     else:
+        # TODO: server RDF as well
         return render_template('collections.html')
 
 

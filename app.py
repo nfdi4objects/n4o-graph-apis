@@ -68,11 +68,13 @@ rdf_formats = {
     'text/rdf+n3': 'n3'
 }
 
+
 @app.route('/terminology')
 @app.route('/terminology/')
 def terminology():
     # TODO: server RDF as well
     return render_template('terminologies.html')
+
 
 @app.route('/collection', defaults={'id': None})
 @app.route('/collection/', defaults={'id': None})
@@ -122,6 +124,10 @@ def collection(id):
         return render_template('collections.html')
 
 
+def isValidQuery(cmd: str) -> bool:
+    return re.search('merge|create|delete', cmd, re.IGNORECASE) is None
+
+
 @app.route('/api/cypher', methods=('GET', 'POST'))
 def cypher_api():
     query = ''
@@ -130,8 +136,11 @@ def cypher_api():
     elif request.data:              # POST
         query = request.data.decode('UTF-8')
 
-    if query and query != '':
-        answer = app.config["cypher-backend"].execute(query)
+    if query:
+        if isValidQuery(query):
+            answer = app.config["cypher-backend"].execute(query)
+        else:
+            raise ApiError("Commands 'delete', 'merge' and 'create' are not supported ", 400)
     else:
         raise ApiError('missing or empty "query" parameter', 400)
 

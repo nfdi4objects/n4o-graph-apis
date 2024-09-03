@@ -124,8 +124,9 @@ def collection(id):
         return render_template('collections.html')
 
 
-def isValidQuery(cmd: str) -> bool:
-    return re.search('merge|create|delete', cmd, re.IGNORECASE) is None
+# Detect write queries the simple way. This also block some valid read-queries.
+def isAllowedCypherQuery(cmd: str) -> bool:
+    return re.search('merge|create|delete|set', cmd, re.IGNORECASE) is None
 
 
 @app.route('/api/cypher', methods=('GET', 'POST'))
@@ -137,10 +138,10 @@ def cypher_api():
         query = request.data.decode('UTF-8')
 
     if query:
-        if isValidQuery(query):
+        if isAllowedCypherQuery(query):
             answer = app.config["cypher-backend"].execute(query)
         else:
-            raise ApiError("Commands 'delete', 'merge' and 'create' are not supported ", 400)
+            raise ApiError("Cypher query is not allowed!", 403)
     else:
         raise ApiError('missing or empty "query" parameter', 400)
 

@@ -45,7 +45,7 @@ sparql:
         SELECT DISTINCT ?class WHERE { [] a ?class }  examples:
 ~~~
 
-Make sure the Neo4j (or compatible) database is read-only because this application does not guarantee to filter out write queries!
+Make sure the Neo4j (or compatible) database is read-only because this application only applies a simple filter to detect Cypher write queries!
 
 ## Usage
 

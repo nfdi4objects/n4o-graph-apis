@@ -2,23 +2,28 @@
  
 {% block content %}
 {% if graph == None %}
-  <p>The collection <b>{{uri}}</b> has not been found in the triple store!</p>
+<p>The collection <b>{{uri}}</b> has not been found in the triple store!</p>
 {% else %}
 <h2>{{ graph.objects(URIRef(uri), URIRef("http://schema.org/name")).__next__() }}</h2>
+<p><a href="{{uri}}">{{uri}}</a></p>
 <p>
-  This is a landing page for the research data set collection <b>{{uri}}</b>.
+  Loaded into the graph at
+  {{ graph.objects(URIRef(uri), URIRef("http://purl.org/dc/terms/issued")).__next__() }}
+  with <a data-sparql-value="SELECT COUNT(*) FROM <https://graph.nfdi4objects.net/collection/4> {?s ?p ?o}">...</a> triples.
+</p>
+{% set homepage = graph.objects(URIRef(uri), URIRef("http://xmlns.com/foaf/0.1/homepage")).__next__() %}
+<hr>
+{% if homepage %}
+<p>
+  Homepage: <a href="{{homepage}}">{{homepage}}</a>
+</p>
+{% endif %}
 </p>
 <p>
   Please use SPARQL to get more information
   <a href="/sparql#query=DESCRIBE%20%3C{{uri}}%3E">about the collection</a>
-  such as 
-  <a href="http://127.0.0.1:8000/sparql#query=SELECT%20%28COUNT%28%2A%29%20as%20%3Ftriples%29%20FROM%20%3C{{uri}}%3E%20%7B%3Fs%20%3Fp%20%3Fo%7D%0A">number of triples</a>.
-  <!-- TODO: live timestamp, number of triples, most used classes and properties... -->
-<!--script>
-const sparql = query => fetch('/api/sparql?' + new URLSearchParams({query}))
-  .then(res => res.json())
-  .then(res => res.results.bindings)
-</script-->
+  such as most used properties and classes...
+</p> 
 {% endif %}
 
 {% endblock %}

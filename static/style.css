@@ -27,6 +27,10 @@ nav > ul > li > a.selected {
   font-weight: bold;
 }
 
+.message {
+  font-size: larger;
+}
+
 /* CodeMirror 5 Idea Theme (to display JSON) */
 .cm-s-idea span.cm-meta { color: #808000; }
 .cm-s-idea span.cm-number { color: #0000FF; }

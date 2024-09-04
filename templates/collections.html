@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
  
 {% block content %}
+{% include 'datatable.html' %}
 
 <p>
   A collection is an individual set of research data imported into the knowledge graph.
@@ -22,18 +23,20 @@ SELECT ?repository (SAMPLE(?n) AS ?name) FROM <https://graph.nfdi4objects.net/co
  ?subject ?predicate ?object
 }">https://graph.nfdi4objects.net/collection/</a>.
 </p>
-<p>
-  The current triple store contains the following collections:
+<div style="display: none" id="collections">
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Collection</th>
+        <th>Repository</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+<p style="display: none" id="no-collections" class="message">
+  The current triple store contains no collections!
 </p>
-<table id="collections">
-  <thead>
-    <tr>
-      <th></th>
-      <th>Collection</th>
-      <th>Repository</th>
-    </tr>
-  </thead>
-</table>
 
 <script>
 $(document).ready(() => {
@@ -50,16 +53,35 @@ SELECT ?collection ?name ?repository FROM n4oc: WHERE {
 }`
   const tbody = $('<tbody>')
   sparql(query).then(res => {
-    res.forEach( ({collection, name, url, repository}) => {
-      const href = collection.value.substr(30) // URI path
-      const a = $('<a>').attr('href',href).text(name.value || collection.value)
-      const row = $('<tr>')
-      row.append($('<td>').text(href.split("/")[2]))
-      row.append($('<td>').append(a))
-      row.append($('<td>').text(repository?.value))
-      tbody.append(row)
-    })
-    $("#collections").append(tbody)
+    if (res.length) {
+      $("#collections").show()
+      res.forEach( ({collection, name, url, repository}) => {
+        const href = collection.value.substr(30) // URI path
+        const a = $('<a>').attr('href',href).text(name.value || collection.value)
+        const row = $('<tr>')
+        row.append($('<td>').text(href.split("/")[2])) // ID
+        row.append($('<td>').append(a))
+        row.append($('<td>').text(repository?.value))
+        tbody.append(row)
+      })
+      const table = $("#collections table")
+      table.append(tbody)
+
+      // TODO: duplicted code
+      table.DataTable({
+        dom: "tip",
+        pageLength: 50,
+        lengthChange: true,
+        deferRender: true,
+        orderClasses: false,
+        language: {
+          paginate: { first: "&lt;&lt;", last: "&gt;&gt;", next: "&gt;", previous: "&lt;" },
+        },
+      })
+
+    } else {
+      $("#no-collections").show()
+    }
   })
 })
 </script>

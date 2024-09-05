@@ -7,7 +7,8 @@ $(document).ready(() => {
     const query = $(e).attr("data-sparql")
     $(e).attr("href", "/sparql#"+new URLSearchParams({query}))
   })
-  $("[data-sparql-value]").each((i,e) => {
+ console.log("WTF")
+  $("a[data-sparql-value]").each((i,e) => {
     const query = $(e).attr("data-sparql-value")
     $(e).attr("href", "/sparql#"+new URLSearchParams({query}))
     sparql(query).then(res => {

@@ -49,7 +49,7 @@ PREFIX n4oc: <https://graph.nfdi4objects.net/collection/>
 SELECT ?collection ?name ?repository FROM n4oc: WHERE {  
   ?collection dct:isPartOf n4oc: .
   OPTIONAL { ?collection schema:name ?name }
-  OPTIONAL { ?db dcat:dataset ?collection . ?db schema:name ?repository }
+  OPTIONAL { ?repository dcat:dataset ?collection }
 }`
   const tbody = $('<tbody>')
   sparql(query).then(res => {

@@ -19,7 +19,7 @@ For background information see the [Knowledge Graph Manual](https://nfdi4objects
 
 ## Installation
 
-Required Python modules are listed in `requirements.txt`. Use [deployment method of your choice](https://flask.palletsprojects.com/en/2.0.x/deploying/#self-hosted-options). The application must be configured first.
+Requires Python >= 3.5. Python modules are listed in `requirements.txt`. Use [deployment method of your choice](https://flask.palletsprojects.com/en/2.0.x/deploying/#self-hosted-options). The application must be configured first.
 
 ## Configuration
 

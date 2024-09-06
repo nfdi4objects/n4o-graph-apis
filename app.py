@@ -1,6 +1,7 @@
 import json
 import yaml
 import glob
+import subprocess
 import re
 import sys
 from flask import Flask, render_template, request, make_response
@@ -46,7 +47,13 @@ def handle_exception(error):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    cmd = ['git', 'rev-parse', '--short=8', 'HEAD']
+    try:
+        githash = subprocess.run(
+            cmd, stdout=subprocess.PIPE).stdout.decode('utf-8')
+    except Exception:
+        githash = None
+    return render_template('index.html', githash=githash)
 
 
 @app.context_processor

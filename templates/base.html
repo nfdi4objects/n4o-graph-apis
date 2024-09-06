@@ -62,5 +62,10 @@
     <main>
       {% block content %} {% endblock %}
     </main>
+    <footer>
+      {% if githash %} 
+        <a href="https://github.com/nfdi4objects/n4o-graph-apis/commit/{{ githash }}" style="float:right;">{{ githash }}</a>
+      {% endif %}
+    </footer>
   </body>
 </html>

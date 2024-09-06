@@ -1,10 +1,12 @@
 # Some CIDOC measurements
 
 PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
-SELECT ?measurement ?value ?unit ?note {
-  ?measurement a crm:E16_Measurement ;
-     crm:P40_observed_dimension ?dimension .
-  ?dimension crm:P90_has_value ?value ; crm:P91_has_unit ?unit .
-  # This is how Objekte im Netz models units and it should be changed because "P3" has little semantics
-  OPTIONAL { ?unit crm:P48_has_preferred_identifier [ crm:P3_has_note ?note ] } 
+SELECT ?graph ?measurement ?value ?unit ?note {
+  GRAPH ?graph {
+    ?measurement a crm:E16_Measurement ;
+       crm:P40_observed_dimension ?dimension .
+    ?dimension crm:P90_has_value ?value ; crm:P91_has_unit ?unit .
+    # This is how Objekte im Netz models units and it should be changed because "P3" has little semantics
+    OPTIONAL { ?unit crm:P48_has_preferred_identifier [ crm:P3_has_note ?note ] } 
+  }
 } LIMIT 100

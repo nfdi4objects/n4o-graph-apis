@@ -50,7 +50,7 @@ def index():
     cmd = ['git', 'rev-parse', '--short=8', 'HEAD']
     try:
         githash = subprocess.run(
-            cmd, stdout=subprocess.PIPE).stdout.decode('utf-8')
+            cmd, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
     except Exception:
         githash = None
     return render_template('index.html', githash=githash)

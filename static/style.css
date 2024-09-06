@@ -29,6 +29,13 @@ nav > ul > li > a.selected {
 
 .message {
   font-size: larger;
+  border: 1px solid #666;
+  padding: 0.5em 0.8em;
+  box-shadow: 10px 5px 5px #333;
+}
+
+footer {
+  margin-top: 1em;
 }
 
 /* CodeMirror 5 Idea Theme (to display JSON) */

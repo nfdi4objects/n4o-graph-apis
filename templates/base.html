@@ -22,8 +22,7 @@
   <body>
     <header>
       <div style="float:right;">
-        <a href="https://nfdi4objects.github.io/n4o-graph/">Manual</a> |
-        <a href="https://github.com/nfdi4objects/n4o-graph-apis/issues">Issues</a>
+        <a href="https://nfdi4objects.github.io/n4o-graph/">Manual</a>
       </div>
       <h1><a href="{{url_for('index')}}">NFDI4Object Knowledge Graph APIs</a></h1>
       <nav>
@@ -63,9 +62,14 @@
       {% block content %} {% endblock %}
     </main>
     <footer>
-      {% if githash %} 
-        <a href="https://github.com/nfdi4objects/n4o-graph-apis/commit/{{ githash }}" style="float:right;">{{ githash }}</a>
-      {% endif %}
+      <div style="float:right;">
+        <a href="https://github.com/nfdi4objects/n4o-graph-apis">Sources</a>
+        {% if githash %} 
+        (<a href="https://github.com/nfdi4objects/n4o-graph-apis/commit/{{ githash }}">{{ githash }}</a>)
+        {% endif %}
+        |
+        <a href="https://github.com/nfdi4objects/n4o-graph-apis/issues">Issues</a>
+      </div>
     </footer>
   </body>
 </html>

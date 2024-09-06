@@ -83,6 +83,12 @@ def terminology():
     return render_template('terminologies.html')
 
 
+@app.route('/repository')
+@app.route('/repository/')
+def repository():
+    return render_template('repositories.html')
+
+
 @app.route('/collection', defaults={'id': None})
 @app.route('/collection/', defaults={'id': None})
 @app.route('/collection/<int:id>')

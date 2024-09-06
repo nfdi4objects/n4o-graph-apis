@@ -1,89 +1,29 @@
 {% extends 'base.html' %}
  
 {% block content %}
-{% include 'datatable.html' %}
+
+<script src="https://unpkg.com/@triply/yasr/build/yasr.min.js"></script>
 
 <p>
   A collection is an individual set of research data imported into the knowledge graph.
   Each collection is identified by an URI starting with
   <code>https://graph.nfdi4objects.net/collection/</code>.
+  Each collection belongs to a <a href="/repository/">research data repository</a>
+  where its data has been published.
 </p>
 <p>
-  Some collections consist of individual records and some collections are part of a larger
-  <a data-sparql="PREFIX schema: <http://schema.org/>
-PREFIX dcat: <http://www.w3.org/ns/dcat#>
-
-SELECT ?repository (SAMPLE(?n) AS ?name) FROM <https://graph.nfdi4objects.net/collection/> {
-  ?repository dcat:dataset []; schema:name ?n
-} GROUP BY ?repository">research data repository</a>.
-</p>
-<p>
-  Information <em>about</em> collections is stored in the
-  named graph <a data-sparql="SELECT * FROM &lt;https://graph.nfdi4objects.net/collection/&gt; {
+  Information about collections is stored in the
+  RDF graph <a data-sparql="SELECT * FROM &lt;https://graph.nfdi4objects.net/collection/&gt; {
  ?subject ?predicate ?object
 }">https://graph.nfdi4objects.net/collection/</a>.
 </p>
-<div style="display: none" id="collections">
-  <table>
-    <thead>
-      <tr>
-        <th></th>
-        <th>Collection</th>
-        <th>Repository</th>
-      </tr>
-    </thead>
-  </table>
-</div>
-<p style="display: none" id="no-collections" class="message">
-  The current triple store contains no collections!
-</p>
 
-<script>
-$(document).ready(() => {
-  const query = `PREFIX dcat: <http://www.w3.org/ns/dcat#>
-PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-PREFIX schema: <http://schema.org/>
-PREFIX dct: <http://purl.org/dc/terms/>
-PREFIX n4oc: <https://graph.nfdi4objects.net/collection/>
-
+<div data-sparql-table="
 SELECT ?collection ?name ?repository FROM n4oc: WHERE {  
   ?collection dct:isPartOf n4oc: .
   OPTIONAL { ?collection schema:name ?name }
   OPTIONAL { ?repository dcat:dataset ?collection }
-}`
-  const tbody = $('<tbody>')
-  sparql(query).then(res => {
-    if (res.length) {
-      $("#collections").show()
-      res.forEach( ({collection, name, url, repository}) => {
-        const href = collection.value.substr(30) // URI path
-        const a = $('<a>').attr('href',href).text(name.value || collection.value)
-        const row = $('<tr>')
-        row.append($('<td>').text(href.split("/")[2])) // ID
-        row.append($('<td>').append(a))
-        row.append($('<td>').text(repository?.value))
-        tbody.append(row)
-      })
-      const table = $("#collections table")
-      table.append(tbody)
-
-      // TODO: duplicted code
-      table.DataTable({
-        dom: "tip",
-        pageLength: 50,
-        lengthChange: true,
-        deferRender: true,
-        orderClasses: false,
-        language: {
-          paginate: { first: "&lt;&lt;", last: "&gt;&gt;", next: "&gt;", previous: "&lt;" },
-        },
-      })
-
-    } else {
-      $("#no-collections").show()
-    }
-  })
-})
-</script>
+  }"
+></div>
 
 {% endblock %}

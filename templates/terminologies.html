@@ -2,23 +2,25 @@
  
 {% block content %}
 
+<script src="https://unpkg.com/@triply/yasr/build/yasr.min.js"></script>
+
 <p>
-  The named graph
-  <code>https://graph.nfdi4objects.net/terminology/</code>
+  The RDF graph
+  <a href="https://graph.nfdi4objects.net/terminology/">https://graph.nfdi4objects.net/terminology/</a>
   contains information about N4O Terminologies, originally managed
   <a href="https://bartoc.org/en/node/18961">in BARTOC</a>.
-  Some terminologies are also hosted fully or partially as part of the
-  N4O graph.
 </p>
 <p>
-  Try
-    <a data-sparql="PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-
-SELECT ?voc (SAMPLE(?names) as ?name) FROM <https://graph.nfdi4objects.net/terminology/> {
-  ?voc a skos:ConceptScheme .
-  ?voc skos:prefLabel ?names
-} GROUP BY ?voc">this query</a>
-    to get a list of vocabularies.
+  Some terminologies are also hosted fully or partially as part of the
+  N4O graph. For instance a small subset of Wikidata is included in RDF graph
+  <a href="http://bartoc.org/en/node/1940">http://bartoc.org/en/node/1940</a>
+  (try <a data-sparql="SELECT * FROM <http://bartoc.org/en/node/1940> { ?s ?p ?o } LIMIT 100">this query</a>).
 </p>
+
+<div data-sparql-table="
+SELECT ?voc (SAMPLE(?names) as ?name) FROM <https://graph.nfdi4objects.net/terminology/> {
+   ?voc a skos:ConceptScheme .
+   ?voc skos:prefLabel ?names
+} GROUP BY ?voc"></div>
 
 {% endblock %}

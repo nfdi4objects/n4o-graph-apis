@@ -1,25 +1,26 @@
 {% extends 'base.html' %}
  
 {% block content %}
-    {% include 'datatable.html' %}
-    <script src="{{url_for('static',filename='cypher-gui.js')}}"></script>
 
-    <p>
-      {% if 'examples' in config.cypher %}
-        {% set examples = config.cypher.examples %}
-        {% include 'examples.html' %}
-      {% endif %}
-    </div>
-      Cypher PG API endpoint <code>/api/cypher</code>
-      (see <a href="https://github.com/nfdi4objects/n4o-graph-apis?tab=readme-ov-file#property-graph-api">documentation</a>)
-    </p>
-    <div class="yasqe">
-      <textarea id="cypherform">{{examples[0].query}}</textarea>
-    </div>
-  <div class="yasr">
-    <div class="yasr_results">
-      <div id="cypherResult"></div>
-    </div>
+{% include 'datatable.html' %}
+<script src="{{url_for('static',filename='cypher-gui.js')}}"></script>
+
+<p>
+  {% if 'examples' in config.cypher %}
+    {% set examples = config.cypher.examples %}
+    {% include 'examples.html' %}
+  {% endif %}
+</div>
+  Cypher PG API endpoint <code>/api/cypher</code>
+  (see <a href="https://github.com/nfdi4objects/n4o-graph-apis?tab=readme-ov-file#property-graph-api">documentation</a>)
+</p>
+<div class="yasqe">
+  <textarea id="cypherform">{{examples[0].query}}</textarea>
+</div>
+<div class="yasr">
+  <div class="yasr_results">
+    <div id="cypherResult"></div>
   </div>
+</div>
  
 {% endblock %}

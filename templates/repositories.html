@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+ 
+{% block content %}
+
+<script src="https://unpkg.com/@triply/yasr/build/yasr.min.js"></script>
+
+<p>
+  All research data in the knowledge graph must be published in a trusted
+  research data repository. These include selected repositories listed in
+  <a href="https://www.re3data.org/">re3data</a> and some repositories of
+  member organizations.
+</p>
+<p>
+  Research data repositories in this graph are identified by Wikidata URIs
+  such as <a href="http://www.wikidata.org/entity/Q22661177">http://www.wikidata.org/entity/Q22661177</a>
+  for <a href="https://zenodo.org/">Zenodo</a>.
+</p>
+
+<div data-sparql-table="SELECT ?repo (SAMPLE(?n) AS ?name) ?url  {
+  GRAPH n4oc: { ?repo dcat:dataset [] }
+  GRAPH <http://bartoc.org/en/node/1940> {
+    OPTIONAL { ?repo schema:name ?n }
+    OPTIONAL { ?repo foaf:homepage ?url }
+  }
+} GROUP BY ?repo ?url"></div>
+
+{% endblock %}

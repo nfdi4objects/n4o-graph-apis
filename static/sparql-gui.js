@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   $("#examples").on("change", e => {
     editor.setValue(e.target.value)
-    editor.query()
+    if (e.target.value != "") editor.query()
   })
 
   if (window.location.hash?.startsWith("#query=")) {

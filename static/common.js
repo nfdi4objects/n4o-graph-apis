@@ -23,12 +23,13 @@ $(document).ready(() => {
     const query = $(e).attr("data-sparql-value")
     $(e).attr("href", "/sparql#"+new URLSearchParams({query}))
     sparql(query).then(res => {
+      res = res?.results?.bindings || []
       res = Object.values(res[0]||{})[0]
       $(e).text(res ? res.value : "???")
     })
   })
 
-  // TODO: only included prefixes used in the query
+  // TODO: only include prefixes used in the query
   const sparqlPrefixes = Object.entries(prefixes).map(([k,v]) => `PREFIX ${k}: <${v}>`).join("\n")+"\n"
 
   $("div[data-sparql-table]").each((i,e) => {

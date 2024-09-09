@@ -57,6 +57,11 @@ def index():
     return render('index.html')
 
 
+@app.route('/license')
+def license():
+    return render('license.html')
+
+
 @app.context_processor
 def utility_processor():
     return dict(URIRef=URIRef)

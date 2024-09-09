@@ -19,10 +19,11 @@
 </p>
 
 <div data-sparql-table="
-SELECT ?collection ?name ?repository FROM n4oc: WHERE {  
+SELECT ?collection ?name ?repository ?license FROM n4oc: WHERE {  
   ?collection dct:isPartOf n4oc: .
   OPTIONAL { ?collection schema:name ?name }
   OPTIONAL { ?repository dcat:dataset ?collection }
+  OPTIONAL { ?collection dct:license ?license }
   }"
 ></div>
 

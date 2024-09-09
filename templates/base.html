@@ -17,7 +17,7 @@
     <script src="{{url_for('static',filename='codemirror/pg.js')}}"></script>
     <script src="{{url_for('static',filename='common.js')}}"></script>
     <meta name="msapplication-TileImage" content="{{url_for('static',filename='nfdi4objects-logo.png')}}" />
-    <title>NFDI4Objects Knowledge Graph APIs</title>
+    <title>N4O Graph: {{title}}</title>
   </head>
   <body>
     <header>
@@ -70,12 +70,13 @@
     </main>
     <footer>
       <div style="float:right;">
-        <a href="https://github.com/nfdi4objects/n4o-graph-apis">Sources</a>
+        web interface
+        <a href="https://github.com/nfdi4objects/n4o-graph-apis">sources</a>
         {% if githash %} 
         (<a href="https://github.com/nfdi4objects/n4o-graph-apis/commit/{{ githash }}">{{ githash }}</a>)
         {% endif %}
         |
-        <a href="https://github.com/nfdi4objects/n4o-graph-apis/issues">Issues</a>
+        <a href="https://github.com/nfdi4objects/n4o-graph-apis/issues">issues</a>
       </div>
     </footer>
   </body>

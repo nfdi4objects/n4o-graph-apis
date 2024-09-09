@@ -25,6 +25,13 @@ def jsonify(data, status=200, indent=3, sort_keys=False):
 
 
 app = Flask(__name__)
+githash = None
+
+
+def render(template, **vars):
+    title = template.split(".")[0]
+    # TODO: add title
+    return render_template(template, title=title, githash=githash, **vars)
 
 
 @app.errorhandler(ApiError)
@@ -47,13 +54,7 @@ def handle_exception(error):
 
 @app.route('/')
 def index():
-    cmd = ['git', 'rev-parse', '--short=8', 'HEAD']
-    try:
-        githash = subprocess.run(
-            cmd, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
-    except Exception:
-        githash = None
-    return render_template('index.html', githash=githash)
+    return render('index.html')
 
 
 @app.context_processor
@@ -80,13 +81,13 @@ rdf_formats = {
 @app.route('/terminology/')
 def terminology():
     # TODO: server RDF as well
-    return render_template('terminologies.html')
+    return render('terminologies.html')
 
 
 @app.route('/repository')
 @app.route('/repository/')
 def repository():
-    return render_template('repositories.html')
+    return render('repositories.html')
 
 
 @app.route('/collection', defaults={'id': None})
@@ -103,9 +104,9 @@ def collection(id):
 
         if "html" in request.headers["Accept"] or format == "html":
             if len(graph) > 0:
-                return render_template('collection.html', uri=uri, graph=graph)
+                return render('collection.html', uri=uri, graph=graph)
             else:
-                return render_template('collection.html', uri=uri, graph=None), 404
+                return render('collection.html', uri=uri, graph=None), 404
         else:
             mimetype = "text/plain"
             if format in set(rdf_formats.values()):
@@ -134,7 +135,7 @@ def collection(id):
 
     else:
         # TODO: server RDF as well
-        return render_template('collections.html')
+        return render('collections.html')
 
 
 # Detect write queries the simple way. This also block some valid read-queries.
@@ -168,12 +169,12 @@ def sparql_api():
 
 @app.route('/cypher')
 def cypher_form():
-    return render_template('cypher.html')
+    return render('cypher.html')
 
 
 @app.route('/sparql')
 def sparql_form():
-    return render_template('sparql.html', **config["sparql"])
+    return render('sparql.html', **config["sparql"])
 
 
 def extend_examples(examples):
@@ -226,6 +227,12 @@ if __name__ == '__main__':
     app.config["sparql-proxy"] = SparqlProxy(
         config["sparql"]["endpoint"], args.debug)
     app.config["debug"] = args.debug
+
+    try:
+        githash = subprocess.run(['git', 'rev-parse', '--short=8', 'HEAD'],
+                                 stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+    except Exception:
+        pass
 
     if args.wsgi:
         serve(app, host="0.0.0.0", **opts)

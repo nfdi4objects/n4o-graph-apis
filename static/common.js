@@ -9,6 +9,7 @@ const prefixes = {
   n4oc: "https://graph.nfdi4objects.net/collection/",
   schema: "http://schema.org/",
   skos: "http://www.w3.org/2004/02/skos/core#",
+  void: "http://rdfs.org/ns/void#",
   wd: "http://www.wikidata.org/entity/",
 }
 

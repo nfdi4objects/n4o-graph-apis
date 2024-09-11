@@ -18,9 +18,11 @@
 
 <div data-sparql-table="SELECT ?repo (SAMPLE(?n) AS ?name) ?url  {
   GRAPH n4oc: { ?repo dcat:dataset [] }
-  GRAPH <http://bartoc.org/en/node/1940> {
-    OPTIONAL { ?repo schema:name ?n }
-    OPTIONAL { ?repo foaf:homepage ?url }
+  OPTIONAL {
+    GRAPH <http://bartoc.org/en/node/1940> {
+      OPTIONAL { ?repo schema:name ?n }
+      OPTIONAL { ?repo foaf:homepage ?url }
+    }
   }
 } GROUP BY ?repo ?url"></div>
 

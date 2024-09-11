@@ -19,10 +19,16 @@
 </p>
 
 <div data-sparql-table="
-SELECT ?voc (SAMPLE(?names) as ?name) ?namespace FROM <https://graph.nfdi4objects.net/terminology/> {
-   ?voc a skos:ConceptScheme .
-   ?voc skos:prefLabel ?names .
-   OPTIONAL { ?voc void:uriSpace ?namespace }
-} GROUP BY ?voc ?namespace"></div>
+SELECT ?voc (SAMPLE(?names) as ?name) ?namespace ?graph {
+  GRAPH <https://graph.nfdi4objects.net/terminology/> {
+    ?voc a skos:ConceptScheme .
+    ?voc skos:prefLabel ?names .
+    OPTIONAL { ?voc void:uriSpace ?namespace }
+  }
+  OPTIONAL {
+    GRAPH ?voc { ?s ?p ?o }
+    BIND(true as ?graph)
+  }
+} GROUP BY ?voc ?namespace ?graph"></div>
 
 {% endblock %}

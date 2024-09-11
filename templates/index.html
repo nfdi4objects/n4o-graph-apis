@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
+  <p class="message">
+    This is a first version, being worked on!
+    Triple store and labeled property graph may contain different subsets of the
+    knowledge graph and data model is not stable yet.
+  </p>
+
   <p>
     This page provides API prototype to the <b>NFDI4Objects Knowledge Graph</b>. The
     Knowledge Graph integrates research data about cultural heritage objects.
@@ -27,11 +33,8 @@
     can be retrieved as <b>Linked Open Data (LOD)</b>
     for collection URIs in the <a href="https://graph.nfdi4objects.net/collection/">https://graph.nfdi4objects.net/collection/</a> (n4oc) namespace.
   </p>
-  <p class="message">
-    This is a first version, being worked on!
-    Triple store and labeled property graph may contain different subsets of the
-    knowledge graph and data model is not stable yet.
-    Please consult <a href="https://nfdi4objects.github.io/n4o-graph/">the manual</a>
-    for details!
+  <p>
+    Please consult <b><a href="https://nfdi4objects.github.io/n4o-graph/">the manual</a></b>
+    for background and details!
   </p>
 {% endblock %}

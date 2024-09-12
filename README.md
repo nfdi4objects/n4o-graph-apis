@@ -1,8 +1,15 @@
 # n4o-graph-api
 
-> API and minimal web interface to [NFDI4Objects Knowledge Graph](https://nfdi4objects.github.io/n4o-graph/).
+> API and minimal web interface to the NFDI4Objects Knowledge Graph (N4O KG)
 
-This repository implements public web APIs to the NFDI4Objects Knowledge Graph. The Knowledge Graph internally consists of an RDF Triple Store and a Labeled Property Graph. These databases can be queried [with SPARQL](#sparql-api) and [with Cypher](#property-graph-api) respectively using the API endpoints provided by this web application. In addition, collection URIs starting with <https://graph.nfdi4objects.net/collection/> are served as linked open data from the triple store.
+This repository implements public web APIs to the NFDI4Objects Knowledge Graph,
+available at <https://graph.nfdi4objects.net/>. The Knowledge Graph internally
+consists of an RDF Triple Store and a Labeled Property Graph. These databases
+can be queried [with SPARQL](#sparql-api) and [with
+Cypher](#property-graph-api) respectively using the API endpoints provided by
+this web application. In addition, collection URIs starting with
+<https://graph.nfdi4objects.net/collection/> are served as linked open data
+from the triple store.
 
 For background information see the [Knowledge Graph Manual](https://nfdi4objects.github.io/n4o-graph/) (in German).
 
@@ -126,7 +133,11 @@ Then locally run for testing:
 python app.py --help
 ~~~
 
-Please run `make lint` to detect Python coding style violations and `make fix` to fix some of these violations.
+Alternatively run `make deps` and `make dev`.
+
+Please run `make lint` to detect Python coding style violations and `make fix` to fix some of these violations. Some unit tests are run with `make test`.
+
+To populate the configured knowledge graph databases with actual data, see the source code repository <https://github.com/nfdi4objects/n4o-import>.
 
 ## License
 

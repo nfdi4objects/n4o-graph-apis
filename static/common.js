@@ -11,6 +11,10 @@ const prefixes = {
   skos: "http://www.w3.org/2004/02/skos/core#",
   void: "http://rdfs.org/ns/void#",
   wd: "http://www.wikidata.org/entity/",
+  dc: "http://purl.org/dc/elements/1.1/",
+  dct: "http://purl.org/dc/terms/",
+  foaf: "http://xmlns.com/foaf/0.1/",
+  wgs: "http://www.w3.org/2003/01/geo/wgs84_pos#"
 }
 
 $(document).ready(() => {

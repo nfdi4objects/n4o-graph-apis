@@ -189,8 +189,7 @@ def extend_examples(examples):
             for file in glob.glob(ex):
                 lines = open(file).read().split("\n")
                 name = re.sub(r"^#\s*", "", lines[0])
-                query = "\n".join(lines[2:])
-                extended.append({"name": name, "query": query})
+                extended.append({"name": name, "query": "\n".join(lines)})
         else:
             extended.append(ex)
     return extended

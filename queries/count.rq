@@ -1,4 +1,4 @@
 # Get number of triples
 
 SELECT (COUNT(*) as ?triples) 
-WHERE { ?s ?p ?o } 
+WHERE { GRAPH ?graph { ?s ?p ?o } }

@@ -23,7 +23,14 @@
 <p>
   Please use SPARQL to get more information
   <a href="/sparql#query=DESCRIBE%20%3C{{uri}}%3E">about the collection</a>
-  such as most used properties and classes...
+  such as <a data-sparql="SELECT ?class (COUNT (?s) AS ?count)
+FROM <{{uri}}> WHERE {
+  ?s a ?class
+} GROUP BY ?class ORDER BY DESC(?count)">used classes</a>
+  and <a data-sparql="SELECT ?property (COUNT (*) AS ?count) 
+FROM <{{uri}}> WHERE {
+  ?s ?property ?o
+} GROUP BY ?property ORDER BY DESC(?count)">used properties</a>.
 </p> 
 <hr>
 <pre><code>

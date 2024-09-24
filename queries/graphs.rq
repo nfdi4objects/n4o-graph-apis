@@ -1,7 +1,8 @@
 # Get all named graphs with number of triples each
 
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX schema: <http://schema.org/>
 
-SELECT ?graph (count(*) as ?triples) {
+SELECT ?graph ?name (count(*) as ?triples) {
   GRAPH ?graph {?s ?p ?o}
-} GROUP BY ?graph ORDER BY DESC(?triples)
+  OPTIONAL { ?graph schema:name ?name }
+} GROUP BY ?graph ?name ORDER BY DESC(?triples)

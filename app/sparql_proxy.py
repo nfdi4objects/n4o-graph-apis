@@ -56,6 +56,7 @@ class SparqlProxy:
         allowed = ["Content-Type", "Vary",
                    "Cache-Control", "Pragma", "Content-Encoding"]
         headers = {k: v for k, v in res.raw.headers.items() if k in allowed}
+        headers['Access-Control-Allow-Origin'] = '*'
 
         def generate():
             for chunk in res.raw.stream(decode_content=False):

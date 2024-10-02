@@ -2,7 +2,7 @@
   --bs-font-sans-serif: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --bs-body-font-family: "PT Sans", -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, sans-serif;
-  --font-color: #043358;
+  --font-color: #0f2a55;
 }
 
 html {
@@ -10,12 +10,20 @@ html {
 }
 a { text-decoration: none; }
 a:hover { text-decoration: underline; }
-h1 > a { color: var(--font-color); }
+h1 > a {
+  color: var(--font-color);
+  font-size: x-large;
+}
 h1, h2, h3, h4 { color: var(--font-color); }
 header > h1, header > nav {
   display: inline-block;
 }
-
+header > nav > ul > li > a {
+  margin: 0 1rem;
+  font-size: x-large;
+  font-weight: bold;
+  color: var(--font-color); 
+}
 p {
   margin-block-start: 0em;
   font-size: large;
@@ -24,11 +32,12 @@ nav > ul > li {
   font-size: 1.8em;
   display: inline;
 }
-nav > ul > li:not(:last-child)::after {
-  content: " | ";
+nav > ul > li > a.selected, nav > ul > li > a:hover {
+  border-bottom: 4px solid #6f777d;
+  text-decoration: none;
 }
-nav > ul > li > a.selected {
-  font-weight: bold;
+header {
+  border-bottom: .1rem solid #E1E1E3;
 }
 
 .message {

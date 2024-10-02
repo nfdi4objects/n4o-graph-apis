@@ -3,36 +3,36 @@
 {% block content %}
   <p class="message">
     This is a first version, being worked on!
-    Triple store and labeled property graph may contain different subsets of the
-    knowledge graph and data model is not stable yet.
   </p>
 
   <p>
     This page provides API prototype to the <b>NFDI4Objects Knowledge Graph</b>. The
     Knowledge Graph integrates research data about cultural heritage objects.
-    The graph consists of two databases with individual APIs each:
+    The following APIs are provided:
   </p>
   <ul>
     <li>
       <p>
-        an <b><a href="sparql">RDF triple store</a></b>
-        with <a href="https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/#query-operation">SPARQL query API</a>
+        <a href="https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/#query-operation">SPARQL</a> query API
+        to the <b><a href="sparql">RDF triple store</a></b>
         at <code>/api/sparql</code>
       </p>
     </li>
     <li>
       <p>
-        a <b><a href="cypher">Labeled Property Graph</a></b>
-        with <a href="https://github.com/nfdi4objects/n4o-graph-apis#cypher-property-graph-api">Cypher Property Graph API</a>
-        at <code>/api/cypher</code>
+        Linked Open Data (LOD) about <a href="/collection/">collections of research data in the graph</a> 
+        for collection URIs in the
+        <a href="https://graph.nfdi4objects.net/collection/">https://graph.nfdi4objects.net/collection/</a> (n4oc) namespace.
       </p>
     </li>
+    <!--li>
+      <p>
+        experimental <a href="https://github.com/nfdi4objects/n4o-graph-apis#cypher-property-graph-api">Cypher Property Graph API</a>
+        to a <b><a href="cypher">Labeled Property Graph</a></b>
+        at <code>/api/cypher</code>
+      </p>
+    </li-->
   </ul>
-  <p>
-    In addition, data about <a href="/collection/">collections of research data in the graph</a> 
-    can be retrieved as <b>Linked Open Data (LOD)</b>
-    for collection URIs in the <a href="https://graph.nfdi4objects.net/collection/">https://graph.nfdi4objects.net/collection/</a> (n4oc) namespace.
-  </p>
   <p>
     Please consult <b><a href="https://nfdi4objects.github.io/n4o-graph/">the manual</a></b>
     for background and details!

@@ -5,15 +5,16 @@
   <script src="https://unpkg.com/@triply/yasqe/build/yasqe.min.js"></script>
   <script src="{{url_for('static',filename='sparql-gui.js')}}"></script>
 
+  {% if 'examples' in config.sparql %}
+    {% set examples = config.sparql.examples %}
+    {% include 'examples.html' %}
+  {% endif %}
+
   <p>
-    {% if 'examples' in config.sparql %}
-      {% set examples = config.sparql.examples %}
-      {% include 'examples.html' %}
-    {% endif %}
     SPARQL endpoint <code>/api/sparql</code>
     (see <a href="https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/#query-operation">documentation</a>)
   </p>
+
   <div id="yasqe"></div>
   <div id="yasr"></div>
-</body>
 {% endblock %}

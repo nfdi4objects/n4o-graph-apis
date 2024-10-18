@@ -39,7 +39,10 @@ nav > ul > li > a.selected, nav > ul > li > a:hover {
 header {
   border-bottom: .1rem solid #E1E1E3;
 }
+main {
+    margin-top: 0.5rem;
 
+}
 .message {
   font-size: larger;
   border: 1px solid #666;

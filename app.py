@@ -181,6 +181,17 @@ def cypher_form():
 def sparql_form():
     return render('sparql.html', **config["sparql"])
 
+@app.route('/lidoconv')
+def lidoconv():
+    return render('lidoconv.html', **config["sparql"])
+
+@app.route('/run_code', methods=['POST'])
+def run_code():
+    code = request.json['code']
+    #old_stdout = sys.stdout
+    #redirected_output = sys.stdout = StringIO()
+    
+    return jsonify({'output': code})
 
 def extend_examples(examples):
     extended = []

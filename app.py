@@ -10,6 +10,7 @@ import argparse
 import mimeparse
 import traceback
 from rdflib import URIRef
+from LidoRDFConverter import LidoRDFConverter
 
 from app import CypherBackend, SparqlProxy, ApiError
 
@@ -185,12 +186,17 @@ def sparql_form():
 def lidoconv():
     return render('lidoconv.html', **config["sparql"])
 
+from io import StringIO, BytesIO
+
 @app.route('/run_code', methods=['POST'])
 def run_code():
+    converter = LidoRDFConverter('lido2rdf.x3ml')
     code = request.json['code']
-    #old_stdout = sys.stdout
-    #redirected_output = sys.stdout = StringIO()
-    
+    with open('tmp.xml','w') as fid:
+        fid.write(code)
+        fid.close()
+    graph,_ = converter.processXML('tmp.xml')
+    code = graph.serialize(format='turtle')
     return jsonify({'output': code})
 
 def extend_examples(examples):

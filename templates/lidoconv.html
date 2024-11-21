@@ -12,7 +12,7 @@
 </head>
 <body>
     <div id="file-info">
-        Editor
+        Lido to RDF Converter
     </div>
     <div class="container">
         <div id="editor" contenteditable="true"></div>
@@ -20,7 +20,7 @@
     </div>
     <div class="btn-container">
         <button class="black-button" id="runButton">
-            <span id="buttonText">Run Code</span>
+            <span id="buttonText">Convert</span>
             <i class="fas fa-circle-notch fa-spin" id="loadingIcon" style="display: none; margin-left: 10px;"></i>
         </button>  
     </div>
@@ -49,18 +49,5 @@
             });
         });
     </script>
-    <script>
-        document.getElementById("runButton").addEventListener("click", function() {
-            var loadingIcon = document.getElementById("loadingIcon");
-
-            // Show the loading icon
-            loadingIcon.style.display = "inline-block";
-
-            // Hide the loading icon after 2 seconds
-            setTimeout(function() {
-                loadingIcon.style.display = "none";
-            }, 1000);
-        });
-    </script>
-</body>
+ </body>
 </html>

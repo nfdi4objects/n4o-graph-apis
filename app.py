@@ -191,12 +191,12 @@ from io import StringIO, BytesIO
 @app.route('/run_code', methods=['POST'])
 def run_code():
     converter = LidoRDFConverter('lido2rdf.x3ml')
-    code = request.json['code']
+    code = ''
     with open('tmp.xml','w') as fid:
-        fid.write(code)
+        fid.write(request.json['code'])
         fid.close()
-    graph,_ = converter.processXML('tmp.xml')
-    code = graph.serialize(format='turtle')
+        graph,_ = converter.processXML('tmp.xml')
+        code = graph.serialize(format='turtle')
     return jsonify({'output': code})
 
 def extend_examples(examples):

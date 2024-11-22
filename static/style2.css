@@ -47,3 +47,10 @@
     font-family: monospace;
 
 }
+
+#x3mle {
+    height: 150px;
+    width: 100%; /* Adjust width as needed */
+    font-size: 12px;
+    font-family: monospace;
+}

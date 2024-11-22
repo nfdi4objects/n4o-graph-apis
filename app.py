@@ -200,8 +200,11 @@ def run_code():
     fmt = 'turtle'
     code = 'no data'
     if sourceFile := toFile(workFile,request.json['code']):
-        x3File = toFile('mapping.x3ml',request.json['mapping']) or 'lido2rdf.x3ml'
+        m = request.json['mapping']
+        print(m)
+        x3File = toFile('mapping.x3ml',m) or 'lido2rdf.x3ml'
         converter = LidoRDFConverter(x3File)
+        print(x3File)
         graph,_ = converter.processXML(sourceFile)
         code = graph.serialize(format=fmt)
     return jsonify({'output': code})

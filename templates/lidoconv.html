@@ -12,13 +12,17 @@
 </head>
 <body>
     <div id="file-info">
-        Lido to RDF Converter
+        Lido to RDF Converter: Lido left, RDF right
     </div>
     <div class="container">
         <div id="editor" contenteditable="true"></div>
         <div id="output" contenteditable="false"></div>
     </div>
     <div class="btn-container">
+        <button class="black-button" id="loadButton">
+            <span id="buttonText">Load default data</span>
+            <i class="fas fa-circle-notch fa-spin" id="loadingIcon" style="display: none; margin-left: 10px;"></i>
+        </button>  
         <button class="black-button" id="runButton">
             <span id="buttonText">Convert</span>
             <i class="fas fa-circle-notch fa-spin" id="loadingIcon" style="display: none; margin-left: 10px;"></i>
@@ -45,6 +49,17 @@
                 data: JSON.stringify({code: code}),
                 success: function(response) {
                     output.setValue(response.output);
+                }
+            });
+        });
+        $("#loadButton").click(function() {
+            $.ajax({
+                url: '/load_code',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({code: ''}),
+                success: function(response) {
+                    editor.setValue(response.output);
                 }
             });
         });

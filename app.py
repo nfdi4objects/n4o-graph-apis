@@ -184,20 +184,30 @@ def sparql_form():
 
 @app.route('/lidoconv')
 def lidoconv():
-    return render('lidoconv.html', **config["sparql"])
-
-from io import StringIO, BytesIO
+    return render('lidoconv.html')
 
 @app.route('/run_code', methods=['POST'])
 def run_code():
     converter = LidoRDFConverter('lido2rdf.x3ml')
-    code = ''
-    with open('tmp.xml','w') as fid:
+    workFile = 'tmp.xml'
+    fmt = 'turtle'
+    code = 'no data'
+    with open(workFile,'w') as fid:
         fid.write(request.json['code'])
         fid.close()
-        graph,_ = converter.processXML('tmp.xml')
-        code = graph.serialize(format='turtle')
+        graph,_ = converter.processXML(workFile)
+        code = graph.serialize(format=fmt)
     return jsonify({'output': code})
+
+
+@app.route('/load_code', methods=['POST'])
+def load_code():
+    dfltSource = 'example.xml'
+    data =f'No file {dfltSource}'
+    with open(dfltSource,'r') as fid:
+        data = fid.read()
+        fid.close()
+    return jsonify({'output': data})
 
 def extend_examples(examples):
     extended = []

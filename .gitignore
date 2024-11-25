@@ -8,3 +8,4 @@ node_modules/
 neo4j.json
 config.yaml
 tmp.xml
+mapping.x3ml

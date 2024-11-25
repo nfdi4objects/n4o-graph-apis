@@ -167,6 +167,16 @@ def cypher_api():
 
     return jsonify(answer)
 
+def fromFile(fname):
+    with open(fname,'r') as fid:
+        return fid.read()
+    return ''
+
+def toFile(fname,data):
+    if data:
+        with open(fname,'w') as fid:
+            fid.write(data)
+            return fname
 
 @app.route('/api/sparql', methods=('GET', 'POST'))
 def sparql_api():
@@ -184,30 +194,22 @@ def sparql_form():
 
 @app.route('/lidoconv')
 def lidoconv():
-    return render('lidoconv.html')
+    config = {'x3': fromFile('lido2rdf.x3ml'),'source':fromFile('example.xml')}
+    return render_template('lidoconv.html',config=config)
 
-def toFile(fname,data):
-    if data:
-        with open(fname,'w') as fid:
-            fid.write(data)
-            fid.close()
-            return fname
 
 @app.route('/run_code', methods=['POST'])
 def run_code():
-    
     workFile = 'tmp.xml'
     fmt = 'turtle'
-    code = 'no data'
+    result = '<no-data/>'
     if sourceFile := toFile(workFile,request.json['code']):
-        m = request.json['mapping']
-        print(m)
-        x3File = toFile('mapping.x3ml',m) or 'lido2rdf.x3ml'
-        converter = LidoRDFConverter(x3File)
-        print(x3File)
-        graph,_ = converter.processXML(sourceFile)
-        code = graph.serialize(format=fmt)
-    return jsonify({'output': code})
+        mapping = request.json['mapping']
+        if x3File := toFile('mapping.x3ml',mapping):
+            converter = LidoRDFConverter(x3File)
+            graph,_ = converter.processXML(sourceFile)
+            result = graph.serialize(format=fmt)
+    return jsonify({'output': result})
 
 
 @app.route('/load_code', methods=['POST'])

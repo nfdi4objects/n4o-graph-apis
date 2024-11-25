@@ -1,3 +1,5 @@
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +17,7 @@
         Lido to RDF Converter: Lido left, RDF right
     </div>
     <div class="container">
-        <div id="editor" contenteditable="true"></div>
+        <div id="editor" contenteditable="true">{{config.get('source','')}}</div>
         <div id="output" contenteditable="false"></div>
     </div>
     <div class="btn-container">
@@ -29,7 +31,7 @@
         </button>  
     </div>
     <div class="container">
-        <div id="x3mle" contenteditable="false"></div>
+        <div id="x3mle" contenteditable="false">{{config.get('x3','')}}</div>
     </div>
 
     <script>
@@ -39,13 +41,11 @@
         editor.setPrintMarginColumn(-1)
 
         var output = ace.edit("output");
-        //output.setTheme("ace/theme/monokai");
         output.session.setMode("ace/mode/turtle");
         output.setPrintMarginColumn(-1)
         output.setOptions({ "readOnly" : true})
        
         var x3mle = ace.edit("x3mle");
-        //output.setTheme("ace/theme/monokai");
         x3mle.session.setMode("ace/mode/turtle");
         x3mle.setPrintMarginColumn(-1)
 
@@ -76,3 +76,4 @@
     </script>
  </body>
 </html>
+{% endblock %}

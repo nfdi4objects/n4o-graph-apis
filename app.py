@@ -194,32 +194,28 @@ def sparql_form():
 
 @app.route('/lidoconv')
 def lidoconv():
-    config = {'x3': fromFile('lido2rdf.x3ml'),'source':fromFile('example.xml')}
-    return render_template('lidoconv.html',config=config)
+    config = {'mapping': fromFile('lido2rdf.x3ml'),'source':fromFile('example.xml')}
+    return render('lidoconv.html',config=config)
 
 
-@app.route('/run_code', methods=['POST'])
-def run_code():
+@app.route('/convertLido', methods=['POST'])
+def convertLido():
     workFile = 'tmp.xml'
     fmt = 'turtle'
     result = '<no-data/>'
-    if sourceFile := toFile(workFile,request.json['code']):
+    if xmlFile := toFile(workFile,request.json['xmlData']):
         mapping = request.json['mapping']
-        if x3File := toFile('mapping.x3ml',mapping):
-            converter = LidoRDFConverter(x3File)
-            graph,_ = converter.processXML(sourceFile)
+        if mappingFile := toFile('mapping.x3ml',mapping):
+            converter = LidoRDFConverter(mappingFile)
+            graph,_ = converter.processXML(xmlFile)
             result = graph.serialize(format=fmt)
     return jsonify({'output': result})
 
 
-@app.route('/load_code', methods=['POST'])
-def load_code():
+@app.route('/loadDftlLido', methods=['POST'])
+def loadDftlLido():
     dfltSource = 'example.xml'
-    data =f'No file {dfltSource}'
-    with open(dfltSource,'r') as fid:
-        data = fid.read()
-        fid.close()
-    return jsonify({'output': data})
+    return jsonify({'output': fromFile(dfltSource)})
 
 def extend_examples(examples):
     extended = []

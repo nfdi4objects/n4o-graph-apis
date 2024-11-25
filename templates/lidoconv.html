@@ -1,37 +1,26 @@
 
+{% extends 'base.html' %}
+
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lido to RDF</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
-    <link rel="icon" href="{{ url_for('static', filename='atom.ico') }}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-</head>
-<body>
-    <div id="file-info">
-        Lido to RDF Converter: Lido left, RDF right
-    </div>
+
+    <h3>Lido to RDF Converter: Lido left, RDF right </h3>
     <div class="container">
         <div id="editor" contenteditable="true">{{config.get('source','')}}</div>
         <div id="output" contenteditable="false"></div>
     </div>
     <div class="btn-container">
-        <button class="black-button" id="loadButton">
+        <button class="black-button" id="dfltLidoBtn">
             <span id="buttonText">Load default data</span>
-            <i class="fas fa-circle-notch fa-spin" id="loadingIcon" style="display: none; margin-left: 10px;"></i>
         </button>  
-        <button class="black-button" id="runButton">
+        <button class="black-button" id="convertBtn">
             <span id="buttonText">Convert</span>
-            <i class="fas fa-circle-notch fa-spin" id="loadingIcon" style="display: none; margin-left: 10px;"></i>
         </button>  
     </div>
     <div class="container">
-        <div id="x3mle" contenteditable="false">{{config.get('x3','')}}</div>
+        <div id="x3mle" contenteditable="false">{{config.get('mapping','')}}</div>
     </div>
 
     <script>
@@ -49,22 +38,22 @@
         x3mle.session.setMode("ace/mode/turtle");
         x3mle.setPrintMarginColumn(-1)
 
-        $("#runButton").click(function() {
-            var code = editor.getValue();
+        $("#convertBtn").click(function() {
+            var xmlData = editor.getValue();
             var mapping = x3mle.getValue();
             $.ajax({
-                url: '/run_code',
+                url: '/convertLido',
                 method: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({code: code, mapping: mapping}),
+                data: JSON.stringify({xmlData: xmlData, mapping: mapping}),
                 success: function(response) {
                     output.setValue(response.output);
                 }
             });
         });
-        $("#loadButton").click(function() {
+        $("#dfltLidoBtn").click(function() {
             $.ajax({
-                url: '/load_code',
+                url: '/loadDftlLido',
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({code: ''}),
@@ -74,6 +63,4 @@
             });
         });
     </script>
- </body>
-</html>
-{% endblock %}
+ {% endblock %}

@@ -62,53 +62,6 @@ footer a {
   color: var(--font-color); 
 }
 
-.black-button { /* Black background */
-  color: black;  
-  background-color: #f0f0f0;          /* White text */
-  padding: 10px 20px;        /* Padding */
-  text-align: center;        /* Center the text */
-  text-decoration: none;     /* Remove underline */
-  display: inline-flex;      /* Flexbox for alignment */
-  align-items: center;       /* Center the content vertically */
-  font-size: 14px;  
-  font-weight: bold;         /* Font size */        /* Bold text */
-  margin: 4px 0;             /* Margin */
-  cursor: pointer;           /* Pointer/hand icon */
-  border-radius: 5px;        /* Rounded corners */
-  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transitions */
-}
-
-.black-button:active {
-  background-color: #333333; /* Dark gray background on click */
-  color: #ffffff;            /* White text on click */
-  transform: scale(0.98);    /* Slightly shrink the button on click */
-}
-
-.container {
-  display: flex;
-}
-#editor {
-  height: 500px;
-  width: 50%; /* Adjust width as needed */
-  font-size: 12px;
-  font-family: monospace;
-}
-#output {
-  height: 500px;
-  width: 50%; /* Adjust width as needed */
-  font-size: 12px;
-  font-family: monospace;
-
-}
-
-#x3mle {
-  height: 300px;
-  width: 100%; /* Adjust width as needed */
-  font-size: 12px;
-  font-family: monospace;
-}
-
-
 /* CodeMirror 5 Idea Theme (to display JSON) */
 .cm-s-idea span.cm-meta { color: #808000; }
 .cm-s-idea span.cm-number { color: #0000FF; }

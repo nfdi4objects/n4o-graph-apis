@@ -3,14 +3,16 @@
 
 {% block content %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{url_for('static',filename='lidostyle.css')}}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <h3>Lido to RDF Converter: Lido left, RDF right </h3>
+    <h3>Input: Lido (XML,left), Mapping(X3ML,right)</h3>
     <div class="container">
-        <div id="editor" contenteditable="true">{{config.get('source','')}}</div>
-        <div id="output" contenteditable="false"></div>
+        <div id="editor">{{config.get('source','')}}</div>
+        <div id="mapping">{{config.get('mapping','')}}</div>
     </div>
+    
     <div class="btn-container">
         <button class="black-button" id="dfltLidoBtn">
             <span id="buttonText">Load default data</span>
@@ -19,35 +21,35 @@
             <span id="buttonText">Convert</span>
         </button>  
     </div>
+
+    <h3>Output: RDF (TTL)</h3>
     <div class="container">
-        <div id="x3mle" contenteditable="false">{{config.get('mapping','')}}</div>
+        <div id="output"></div>
     </div>
 
     <script>
-        var editor = ace.edit("editor");
-        editor.setTheme("ace/theme/monokai");
-        editor.session.setMode("ace/mode/xml");
-        editor.setPrintMarginColumn(-1)
-
-        var output = ace.edit("output");
-        output.session.setMode("ace/mode/turtle");
-        output.setPrintMarginColumn(-1)
-        output.setOptions({ "readOnly" : true})
-       
-        var x3mle = ace.edit("x3mle");
-        x3mle.session.setMode("ace/mode/turtle");
-        x3mle.setPrintMarginColumn(-1)
+        function makeEdit(label, style="ace/theme/monokai",fmt="ace/mode/xml" ) {
+            var ed = ace.edit(label);
+            ed.setTheme(style);
+            ed.session.setMode(fmt);
+            ed.setPrintMarginColumn(-1)
+            return ed;
+        }
+        var sourceEditor = makeEdit("editor");
+        var mappingEditor = makeEdit("mapping","ace/theme/x-code");
+        var outputDisplay = makeEdit("output","","ace/mode/turtle");
+        outputDisplay.setOptions({ "readOnly" : true})
 
         $("#convertBtn").click(function() {
-            var xmlData = editor.getValue();
-            var mapping = x3mle.getValue();
+            var xmlData = sourceEditor.getValue();
+            var mapping = mappingEditor.getValue();
             $.ajax({
                 url: '/convertLido',
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({xmlData: xmlData, mapping: mapping}),
                 success: function(response) {
-                    output.setValue(response.output);
+                    outputDisplay.setValue(response.output);
                 }
             });
         });
@@ -58,7 +60,7 @@
                 contentType: 'application/json',
                 data: JSON.stringify({code: ''}),
                 success: function(response) {
-                    editor.setValue(response.output);
+                    sourceEditor.setValue(response.output);
                 }
             });
         });

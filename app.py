@@ -10,8 +10,7 @@ import argparse
 import mimeparse
 import traceback
 from rdflib import URIRef
-from LidoRDFConverter import LidoRDFConverter
-
+import lidoEditor
 from app import CypherBackend, SparqlProxy, ApiError
 
 
@@ -167,17 +166,6 @@ def cypher_api():
 
     return jsonify(answer)
 
-def fromFile(fname):
-    with open(fname,'r') as fid:
-        return fid.read()
-    return ''
-
-def toFile(fname,data):
-    if data:
-        with open(fname,'w') as fid:
-            fid.write(data)
-            return fname
-
 @app.route('/api/sparql', methods=('GET', 'POST'))
 def sparql_api():
     return app.config["sparql-proxy"].proxyRequest(request)
@@ -194,28 +182,15 @@ def sparql_form():
 
 @app.route('/lidoconv')
 def lidoconv():
-    config = {'mapping': fromFile('lido2rdf.x3ml'),'source':fromFile('example.xml')}
-    return render('lidoconv.html',config=config)
-
-
-@app.route('/convertLido', methods=['POST'])
-def convertLido():
-    workFile = 'tmp.xml'
-    fmt = 'turtle'
-    result = '<no-data/>'
-    if xmlFile := toFile(workFile,request.json['xmlData']):
-        mapping = request.json['mapping']
-        if mappingFile := toFile('mapping.x3ml',mapping):
-            converter = LidoRDFConverter(mappingFile)
-            graph,_ = converter.processXML(xmlFile)
-            result = graph.serialize(format=fmt)
-    return jsonify({'output': result})
-
+    return render('lidoconv.html',config=lidoEditor.getConfig())
 
 @app.route('/loadDftlLido', methods=['POST'])
 def loadDftlLido():
-    dfltSource = 'example.xml'
-    return jsonify({'output': fromFile(dfltSource)})
+    return jsonify({'output': lidoEditor.dfltLidoText()})
+
+@app.route('/convertLido', methods=['POST'])
+def convertLido():
+    return jsonify({'output': lidoEditor.processRequest(request)})
 
 def extend_examples(examples):
     extended = []

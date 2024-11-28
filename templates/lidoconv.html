@@ -7,10 +7,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <script>function getPaging(s1,s2) {alert("id1="+s1+" id2="+s2); } </script>
+
     <h3>Input: Mapping(X3ML)</h3>
     <div class="container">
         <div id="mapping">{{config.get('mappingTxt','')}}</div>
-        <div id="mapping2"></div>
+        <div id="mapping2" style="overflow-y: scroll;">
+            <ul>
+                {% for mapping in config.get('mappings',[]) %}
+                {% set rowloop = loop %}
+                <li idm="{{rowloop.index}}"><span class="caret">Mapping {{rowloop.index}}</span>
+                  <ul class="nested">
+                    {% for link in mapping.POs %}
+                        <li onclick="getPaging({{loop.index0}},{{rowloop.index0}})">Link {{loop.index}}</li>
+                    {% endfor %}
+                  </ul>
+                </li>
+                {% endfor %}
+              </ul> 
+        </div>
     </div>
     
     <h3>Output: Lido (XML,left), RDF (TT,rightL)</h3>
@@ -29,6 +44,15 @@
     </div>
  
     <script>
+        var toggler = document.getElementsByClassName("caret");
+        var i;
+        for (i = 0; i < toggler.length; i++) {
+            toggler[i].addEventListener("click", function() {
+                this.parentElement.querySelector(".nested").classList.toggle("active");
+                this.classList.toggle("caret-down");
+            });
+        } 
+  
         function makeEdit(label, style="ace/theme/monokai",fmt="ace/mode/xml" ) {
             var ed = ace.edit(label);
             ed.setTheme(style);

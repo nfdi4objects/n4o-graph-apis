@@ -7,12 +7,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <h3>Input: Lido (XML,left), Mapping(X3ML,right)</h3>
+    <h3>Input: Mapping(X3ML)</h3>
     <div class="container">
-        <div id="editor">{{config.get('sourceTxt','')}}</div>
         <div id="mapping">{{config.get('mappingTxt','')}}</div>
+        <div id="mapping2"></div>
     </div>
     
+    <h3>Output: Lido (XML,left), RDF (TT,rightL)</h3>
+    <div class="container">
+        <div id="editor">{{config.get('sourceTxt','')}}</div>
+        <div id="output"></div>
+    </div>
+
     <div class="btn-container">
         <button class="black-button" id="dfltLidoBtn">
             <span id="buttonText">Load default data</span>
@@ -21,12 +27,7 @@
             <span id="buttonText">Convert</span>
         </button>  
     </div>
-
-    <h3>Output: RDF (TTL)</h3>
-    <div class="container">
-        <div id="output"></div>
-    </div>
-
+ 
     <script>
         function makeEdit(label, style="ace/theme/monokai",fmt="ace/mode/xml" ) {
             var ed = ace.edit(label);

@@ -15,11 +15,31 @@
         <div id="mapping2" style="overflow-y: scroll;">
             <ul>
                 {% for mapping in config.get('mappings',[]) %}
-                {% set rowloop = loop %}
-                <li idm="{{rowloop.index}}"><span class="caret">Mapping {{rowloop.index}}</span>
+                {% set i = loop.index0 %}
+                <li><span class="caret">Mapping {{i+1}}</span>
                   <ul class="nested">
+                    <li>
+                        <form action="/action_page.php">
+                            <label for="fname">path:</label>
+                            <input type="text" id="fname" name="sPath{{i}}", value="{{ mapping.S.path }}">
+                            <label for="lname">entity:</label>
+                            <input type="text" id="lname" name="sEntity{{i}}", value="{{ mapping.S.entity }}">
+                            <input type="submit" value="Submit">
+                          </form> 
+                    </li>
                     {% for link in mapping.POs %}
-                        <li onclick="getPaging({{loop.index0}},{{rowloop.index0}})">Link {{loop.index}}</li>
+                    {% set j = loop.index0 %}
+                        <li>
+                            <form action="/action_page.php">
+                                <label for="fname">Link {{j+1}} - path:</label>
+                                <input type="text" id="fname" name="poPath{{i}},{{j}}", value="{{ link.P.path }}">
+                                <label for="lname">property:</label>
+                                <input type="text" id="lname" name="pEntity{{i}},{{j}}", value="{{ link.P.entity }}">
+                                <label for="lname">entity:</label>
+                                <input type="text" id="lname" name="oEntity{{i}},{{j}}", value="{{ link.O.entity }}">
+                                <input type="submit" value="Submit">
+                              </form> 
+                        </li>
                     {% endfor %}
                   </ul>
                 </li>

@@ -33,14 +33,7 @@
 
 #mapping {
   height: 300px;
-  width: 50%; /* Adjust width as needed */
-  font-size: 12px;
-  font-family: monospace;
-}
-
-#mapping2 {
-  height: 300px;
-  width: 50%; /* Adjust width as needed */
+  width: 100%; /* Adjust width as needed */
   font-size: 12px;
   font-family: monospace;
 }

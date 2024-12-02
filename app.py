@@ -194,7 +194,14 @@ def convertLido():
 
 @app.route('/<int:mIndex>/editMapping', methods=('GET', 'POST'))
 def editMapping(mIndex):
-    print(mIndex)
+    getv = lambda x : request.args.get(x)
+    print(mIndex,getv('path'),getv('entity'))
+    return redirect(url_for('lidoconv'))
+
+@app.route('/<int:mIndex>/editLink', methods=('GET', 'POST'))
+def editLink(mIndex):
+    getv = lambda x : request.args.get(x)
+    print(mIndex,getv('linkIndex'),getv('path'),getv('property'),getv('entity'))
     return redirect(url_for('lidoconv'))
 
 def extend_examples(examples):

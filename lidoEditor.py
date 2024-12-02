@@ -31,7 +31,7 @@ def checkX3File():
 def getConfig():
     x3mlFile = checkX3File()
     mappings = getMapping(x3mlFile)
-    return {'mappingTxt': fromFile(x3mlFile),'sourceTxt':fromFile(dlftLidoFile()),'mappings':mappings}
+    return {'sourceTxt':fromFile(dlftLidoFile()),'mappings':mappings}
 
 def processRequest(request):
     workFile = 'tmp.xml'

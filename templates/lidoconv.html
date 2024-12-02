@@ -7,41 +7,64 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <script>function getPaging(s1,s2) 
+    <script>
+        function applyDomainAt(dIndex) 
         {
-            alert("id1="+s1+" id2="+s2); 
-        } 
+            let getv = (a, b) => document.getElementById(a+b).value;
+            let pathValue = getv("sPath",dIndex);
+            let entityValue = getv("sEntity",dIndex);
+            $.ajax({
+                url: "/"+dIndex+"/editMapping",
+                method: 'GET',
+                contentType: 'application/json',
+                data: "path="+pathValue+"&entity="+entityValue,
+                success: function(response) {}
+            });
+         } 
+        function applyRangeAt(dIndex,rIndex) 
+        {
+            let getv = (a, b,c) => document.getElementById(a+b+"-"+c).value;
+            let pathValue = getv("poPath",dIndex,rIndex);
+            let pEntityValue = getv("pEntity",dIndex,rIndex);
+            let oEntityValue = getv("oEntity",dIndex,rIndex);
+            $.ajax({
+                url: "/"+dIndex+"/editLink",
+                method: 'GET',
+                contentType: 'application/json',
+                data: "linkIndex="+rIndex+"&path="+pathValue+"&property="+pEntityValue+"&entity="+oEntityValue,
+                success: function(response) {}
+            });
+         } 
         </script>
 
     <h3>Input: Mapping(X3ML)</h3>
     <div class="container">
-        <div id="mapping">{{config.get('mappingTxt','')}}</div>
-        <div id="mapping2" style="overflow-y: scroll;">
+        <div id="mapping" style="overflow-y: scroll;">
             <ul>
                 {% for mapping in config.get('mappings',[]) %}
                 {% set i = loop.index0 %}
                 <li><span class="caret">Mapping {{i+1}}</span>
                   <ul class="nested">
                     <li>
-                        <form action="{{ url_for('editMapping', mIndex = i) }}">
+                        <form method="post">
                             <label for="fname">Domain - path:</label>
-                            <input type="text" id="fname" name="sPath{{i}}", value="{{ mapping.S.path }}">
+                            <input type="text" id="sPath{{i}}", value="{{ mapping.S.path }}">
                             <label for="lname">entity:</label>
-                            <input type="text" id="lname" name="sEntity{{i}}", value="{{ mapping.S.entity }}">
-                            <input type="submit" value="Submit" href=>
-                          </form> 
+                            <input type="text" id="sEntity{{i}}", value="{{ mapping.S.entity }}">
+                            <input type="button" onclick="applyDomainAt('{{i}}')" value="submit"/>
+                        </form> 
                     </li>
                     {% for link in mapping.POs %}
                     {% set j = loop.index0 %}
                         <li>
-                            <form action="/action_page.php">
+                            <form method="post">
                                 <label for="fname">Link {{j+1}} - path:</label>
-                                <input type="text" id="fname" name="poPath{{i}},{{j}}", value="{{ link.P.path }}">
+                                <input type="text" id="poPath{{i}}-{{j}}", value="{{ link.P.path }}">
                                 <label for="lname">property:</label>
-                                <input type="text" id="lname" name="pEntity{{i}},{{j}}", value="{{ link.P.entity }}">
+                                <input type="text" id="pEntity{{i}}-{{j}}", value="{{ link.P.entity }}">
                                 <label for="lname">entity:</label>
-                                <input type="text" id="lname" name="oEntity{{i}},{{j}}", value="{{ link.O.entity }}">
-                                <input type="submit" value="Submit">
+                                <input type="text" id="oEntity{{i}}-{{j}}", value="{{ link.O.entity }}">
+                                <input type="button" onclick="applyRangeAt('{{i}}','{{j}}')"  value="Submit">
                               </form> 
                         </li>
                     {% endfor %}
@@ -85,7 +108,6 @@
             return ed;
         }
         var sourceEditor = makeEdit("editor");
-        var mappingEditor = makeEdit("mapping","ace/theme/x-code");
         var outputDisplay = makeEdit("output","","ace/mode/turtle");
         outputDisplay.setOptions({ "readOnly" : true})
 
@@ -96,7 +118,7 @@
                 url: '/convertLido',
                 method: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({xmlData: xmlData, mapping: mapping}),
+                data: JSON.stringify({xmlData: xmlData, mapping: ""}),
                 success: function(response) {
                     outputDisplay.setValue(response.output);
                 }

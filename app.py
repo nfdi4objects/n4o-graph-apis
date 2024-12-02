@@ -4,7 +4,7 @@ import glob
 import subprocess
 import re
 import sys
-from flask import Flask, render_template, request, make_response
+from flask import Flask, render_template, request, url_for, flash, redirect, send_file,make_response
 from waitress import serve
 import argparse
 import mimeparse
@@ -191,6 +191,11 @@ def loadDftlLido():
 @app.route('/convertLido', methods=['POST'])
 def convertLido():
     return jsonify({'output': lidoEditor.processRequest(request)})
+
+@app.route('/<int:mIndex>/editMapping', methods=('GET', 'POST'))
+def editMapping(mIndex):
+    print(mIndex)
+    return redirect(url_for('lidoconv'))
 
 def extend_examples(examples):
     extended = []

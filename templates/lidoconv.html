@@ -7,7 +7,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <script>function getPaging(s1,s2) {alert("id1="+s1+" id2="+s2); } </script>
+    <script>function getPaging(s1,s2) 
+        {
+            alert("id1="+s1+" id2="+s2); 
+        } 
+        </script>
 
     <h3>Input: Mapping(X3ML)</h3>
     <div class="container">
@@ -19,12 +23,12 @@
                 <li><span class="caret">Mapping {{i+1}}</span>
                   <ul class="nested">
                     <li>
-                        <form action="/action_page.php">
-                            <label for="fname">path:</label>
+                        <form action="{{ url_for('editMapping', mIndex = i) }}">
+                            <label for="fname">Domain - path:</label>
                             <input type="text" id="fname" name="sPath{{i}}", value="{{ mapping.S.path }}">
                             <label for="lname">entity:</label>
                             <input type="text" id="lname" name="sEntity{{i}}", value="{{ mapping.S.entity }}">
-                            <input type="submit" value="Submit">
+                            <input type="submit" value="Submit" href=>
                           </form> 
                     </li>
                     {% for link in mapping.POs %}

@@ -13,8 +13,8 @@ def toFile(fname,data):
             fid.write(data)
             return fname
 
-def dlft3MFile(): return './lido2rdf.x3ml'
-def dlftLidoFile(): return './example.xml'
+def dlft3MFile(): return './defaultMapping.x3ml'
+def dlftLidoFile(): return './defaultLido.xml'
 
 def dfltLidoText(): 
     return fromFile(dlftLidoFile())

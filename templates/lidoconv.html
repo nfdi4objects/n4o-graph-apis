@@ -8,30 +8,29 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
+        function getValue(s)
+        {
+            return document.getElementById(s).value;
+        }
         function applyDomainAt(dIndex) 
         {
-            let getv = (a, b) => document.getElementById(a+b).value;
-            let pathValue = getv("sPath",dIndex);
-            let entityValue = getv("sEntity",dIndex);
+            let mk = (s) => s+dIndex;
             $.ajax({
                 url: "/"+dIndex+"/editMapping",
                 method: 'GET',
                 contentType: 'application/json',
-                data: "path="+pathValue+"&entity="+entityValue,
+                data: "path="+getValue(mk("sPath"))+"&entity="+getValue(mk("sEntity")),
                 success: function(response) {}
             });
          } 
         function applyRangeAt(dIndex,rIndex) 
         {
-            let getv = (a, b,c) => document.getElementById(a+b+"-"+c).value;
-            let pathValue = getv("poPath",dIndex,rIndex);
-            let pEntityValue = getv("pEntity",dIndex,rIndex);
-            let oEntityValue = getv("oEntity",dIndex,rIndex);
+            let mk = (s) => s+dIndex+"-"+rIndex;
             $.ajax({
                 url: "/"+dIndex+"/editLink",
                 method: 'GET',
                 contentType: 'application/json',
-                data: "linkIndex="+rIndex+"&path="+pathValue+"&property="+pEntityValue+"&entity="+oEntityValue,
+                data: "linkIndex="+rIndex+"&path="+getValue(mk("poPath"))+"&property="+getValue(mk("pEntity"))+"&entity="+getValue(mk("oEntity")),
                 success: function(response) {}
             });
          } 

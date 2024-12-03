@@ -154,6 +154,15 @@ def getLidoInfo(elem, i):
     return {'id': id, 'text': elem.text, 'mode': mode}
 
 
+def makeElements(path):
+    if path != '':
+        w = path.split('/')
+        elem = etree.Element(w[0])
+        if pathTail :='/'.join(w[1:]):
+            elem.append(makeElements(pathTail)) 
+        return elem
+
+
 class ExP:
     '''Linking a XML path to a entity label'''
 
@@ -184,8 +193,27 @@ class ExP:
     def elements(self, root):
         xpath = "." if self.isRoot() else f".//{self.path}"
         return lidoXPath(root, xpath)
+    
+    def toXML_D(self,label, condition=None):
+        elem = etree.Element(label)
+        etree.SubElement(elem,'source_node').text =  self.path
+        entityAttrs = {'variable': self.var} if self.var else {} 
+        targetElem = etree.SubElement(elem,'target_node')
+        if condition:
+            targetElem.append(condition.toXML(self.path))
+        etree.SubElement(etree.SubElement(targetElem,'entity',attrib=entityAttrs),'type').text = self.entity
+        return elem
 
-
+    def toXML_L(self, label, condition=None):
+        elem = etree.Element(label)
+        etree.SubElement(etree.SubElement(elem,'source_relation'),'relation').text =  self.path
+        entityAttrs = {'variable': self.var} if self.var else {} 
+        targetElem = etree.SubElement(elem,'target_relation')
+        if condition:
+            targetElem.append(condition.toXML(self.path))
+        etree.SubElement(targetElem,'relationship',attrib=entityAttrs).text = self.entity
+        return elem
+ 
 def stripPath(link: ExP, txt: str) -> str:
     return txt.removeprefix(link.path)
 
@@ -217,6 +245,15 @@ class Condition():
                     return True
             return False
         return True
+    def toXML(self,path=''):
+        elem = etree.Element('if')
+        orElem =etree.SubElement(elem,'or')
+        for x in self.values:
+            etree.SubElement(
+                etree.SubElement(orElem,'if'),'equals',attrib={'value':x}).text=path+self.access
+        return elem
+        
+    # end def
 
 
 class PO():
@@ -239,6 +276,13 @@ class PO():
         data = [getLidoInfo(elem, i)
                 for i, elem in enumerate(self.O.elements(root))]
         return {'P': self.P.toDict(), 'O': self.O.toDict(), 'data': data, 'isValid': self.isValid(root)}
+
+    def toXML(self,label):
+        elem = etree.Element(label)
+        cond = self.condition if self.condition.access else None
+        elem.append(self.P.toXML_L('path',cond))
+        elem.append(self.O.toXML_D('range'))
+        return elem
 
 class Mapping:
     def __init__(self, s: ExP, n=0):
@@ -272,6 +316,13 @@ class Mapping:
     def addIntermediate(self, intermediate):
         if intermediate:
             self.intermediates.append(intermediate)
+
+    def toXML(self,label='mapping'):
+        elem = etree.Element(label)
+        elem.append(self.S.toXML_D('domain'))
+        for po in self.POs:
+            elem.append(po.toXML('link'))
+        return elem
 
 
 Mappings = list[Mapping]

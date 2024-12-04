@@ -26,6 +26,7 @@ def jsonify(data, status=200, indent=3, sort_keys=False):
 
 app = Flask(__name__)
 githash = None
+mapper = None
 
 
 def render(template, **vars):
@@ -182,7 +183,8 @@ def sparql_form():
 
 @app.route('/lidoconv')
 def lidoconv():
-    return render('lidoconv.html',config=lidoEditor.getConfig())
+    config =  {'sourceTxt':lidoEditor.workLidoText(),'mappings':mapper.mappings}
+    return render('lidoconv.html',config=config)
 
 @app.route('/loadDftlLido', methods=['POST'])
 def loadDftlLido():
@@ -194,14 +196,12 @@ def convertLido():
 
 @app.route('/<int:mIndex>/editMapping', methods=('GET', 'POST'))
 def editMapping(mIndex):
-    getv = lambda x : request.args.get(x)
-    print(mIndex,getv('path'),getv('entity'))
+    mapper.changeMapping(mIndex,request)
     return redirect(url_for('lidoconv'))
 
 @app.route('/<int:mIndex>/editLink', methods=('GET', 'POST'))
 def editLink(mIndex):
-    getv = lambda x : request.args.get(x)
-    print(mIndex,getv('linkIndex'),getv('path'),getv('property'),getv('entity'))
+    mapper.changeLink(mIndex,request)
     return redirect(url_for('lidoconv'))
 
 def extend_examples(examples):
@@ -218,6 +218,7 @@ def extend_examples(examples):
 
 
 if __name__ == '__main__':
+    mapper = lidoEditor.makeWorkspace()
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--port', type=int,
                         default=8000, help="Server port")

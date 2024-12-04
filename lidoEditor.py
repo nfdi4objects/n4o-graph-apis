@@ -3,6 +3,14 @@ from x3ml import getMapping
 import LidoRDFConverter as LRC 
 from lxml import etree
 
+def dlftMappingFile(): return './defaultMapping.x3ml'
+def dlftLidoFile(): return './defaultLido.xml'
+
+def workFolder(): return './work'
+def workMappingFile(): return workFolder()+'/mapping.x3ml'
+def workLidoFile(): return workFolder()+'/lido.xml'
+
+
 class Mapper():
     def __init__(self, fileName=''):
         self.mappings = getMapping(fileName)
@@ -57,15 +65,51 @@ class Mapper():
         return root
     
     def tostring(self):
-        return etree.tostring(self.toXML(), pretty_print=True,xml_declaration=True, encoding='UTF-8')
+        return etree.tostring(self.toXML(), pretty_print=True,xml_declaration=True, encoding='UTF-8').decode()
+    
+    def changeMapping(self, mIndex, request):
+        getv = lambda x : request.args.get(x)
+        if mIndex < len(self.mappings):
+            S = self.mappings[mIndex].S
+            S.path = getv('path')
+            S.entity = getv('entity')
+            self.store()
+        
+    def changeLink(self, mIndex, request):
+        getv = lambda x : request.args.get(x)
+        if mIndex < len(self.mappings):
+            po_list = self.mappings[mIndex].POs
+            lIndex = int(getv('linkIndex'))
+            print(lIndex,len(po_list))
+            if lIndex < len(po_list):
+                P = po_list[lIndex].P
+                O = po_list[lIndex].O
+                P.path = getv('path')
+                P.entity = getv('property')
+                O.path = getv('path')
+                O.entity = getv('entity')
+                self.store()
+    
+    def store(self):
+        toFile(workMappingFile(),self.tostring())
+
+def makeWorkspace():
+    Path(workFolder()).mkdir(exist_ok=True)
+    mFile = Path(workMappingFile())
+    if not mFile.exists():
+        mFile.write_text(Path(dlftMappingFile()).read_text())
+    sFile = Path(workLidoFile())
+    if not sFile.exists():
+        sFile.write_text(Path(dlftLidoFile()).read_text())
+    return Mapper(mFile)
 
 def testMapper(**kw):
     str = Mapper('defaultMapping.x3ml').tostring()
     if kw.get('print',None):
-        print(str.decode(), end='')
+        print(str, end='')
     if fn:=kw.get('file',None):
         with open(fn,'w') as fid:
-            fid.write(str.decode())
+            fid.write(str)
 
 def fromFile(fname):
     with open(fname,'r') as fid:
@@ -78,38 +122,20 @@ def toFile(fname,data):
             fid.write(data)
             return fname
 
-def dlft3MFile(): return './defaultMapping.x3ml'
-def dlftLidoFile(): return './defaultLido.xml'
 
 def dfltLidoText(): 
     return fromFile(dlftLidoFile())
 
-def checkX3File():
-    f = Path('./mapping.x3ml')
-    if f.exists(): 
-        return f
-    f = Path(dlft3MFile())
-    if f.exists(): 
-        return f
-    return Path()
-
-def getConfig():
-    x3mlFile = checkX3File()
-    mappings = getMapping(x3mlFile)
-    return {'sourceTxt':fromFile(dlftLidoFile()),'mappings':mappings}
+def workLidoText():
+    return fromFile(workLidoFile())
 
 def processRequest(request):
-    workFile = 'tmp.xml'
     fmt = 'turtle'
     result = '<no-data/>'
-    if xmlFile := toFile(workFile,request.json['xmlData']):
-        mapping = request.json['mapping']
-        if mappingFile := toFile('mapping.x3ml',mapping):
-            converter = LRC.LidoRDFConverter(mappingFile)
-            graph,_ = converter.processXML(xmlFile)
-            result = graph.serialize(format=fmt)
+    if xmlFile := toFile(workLidoFile(),request.json['xmlData']):
+        converter = LRC.LidoRDFConverter(workMappingFile())
+        graph,_ = converter.processXML(xmlFile)
+        result = graph.serialize(format=fmt)
     return result
-
-
 
 

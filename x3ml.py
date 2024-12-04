@@ -31,7 +31,7 @@ def md5Hash(s):
 
 
 def MAPPING_FILE():
-    return 'lido2rdf.x3ml'
+    return 'defaultMapping.x3ml'
 
 
 DOMAIN_PATH = './domain/source_node'

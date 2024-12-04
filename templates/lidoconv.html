@@ -112,12 +112,11 @@
 
         $("#convertBtn").click(function() {
             var xmlData = sourceEditor.getValue();
-            var mapping = mappingEditor.getValue();
             $.ajax({
                 url: '/convertLido',
                 method: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({xmlData: xmlData, mapping: ""}),
+                data: JSON.stringify({xmlData: xmlData}),
                 success: function(response) {
                     outputDisplay.setValue(response.output);
                 }

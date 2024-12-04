@@ -3,69 +3,59 @@ from x3ml import getMapping
 import LidoRDFConverter as LRC 
 from lxml import etree
 
-
-
-class Info():
-    def __init__(self, var=None):
-        self.var = var
-
-    def toXML(self):
-        xml = etree.fromstring('<info><title>A mapping of LIDO V1.0 to CIDOC 6.0</title></info>')
-        return xml
-    
-
 class Mapper():
     def __init__(self, fileName=''):
         self.mappings = getMapping(fileName)
         self.graph = LRC.makeResultGraph()
     
     def info(self):
-        return '''<info>
-                    <title>A mapping of LIDO V1.0 to CIDOC 6.0</title>
-                    <general_description>Administrative Metadata Only</general_description>
-                    <source>
-                        <source_info>
-                            <source_schema type="" version="">LIDO v1.0</source_schema>
-                        </source_info>
-                    </source>
-                    <target>
-                        <target_info>
-                            <target_schema schema_file="cidoc_crm_v6.0-draft-2015January.rdfs" type="rdfs" version="6.0">CIDOC-CRM</target_schema>
-                        </target_info>
-                    </target>
-                    <mapping_info>
-                        <mapping_created_by_org/>
-                        <mapping_created_by_person/>
-                        <in_collaboration_with/>
-                    </mapping_info>
-                    <example_data_info>
-                        <example_data_from/>
-                        <example_data_contact_person/>
-                        <example_data_source_record/>
-                        <generator_policy_info/>
-                        <example_data_target_record/>
-                        <thesaurus_info/>
-                    </example_data_info>
-                  </info>'''
-
+        infoElem = etree.Element('info')
+        etree.SubElement(infoElem,'title').text='A mapping of LIDO V1.0 to CIDOC 6.0'
+        etree.SubElement(infoElem,'general_description').text='Administrative Metadata Only'
+      
+        attr = {'type':'', 'version':''}
+        etree.SubElement(
+            etree.SubElement(
+                etree.SubElement(infoElem,'source'),'source_info'),'source_schema',attrib=attr).text='LIDO v1.0'
+       
+        attr = {'type':'rdfs', 'schema_file':'cidoc_crm_v6.0-draft-2015January.rdfs', 'version':'6.0'}
+        etree.SubElement(
+            etree.SubElement(
+                etree.SubElement(infoElem,'target'),'target_info'),'target_schema',attrib=attr).text='CIDOC-CRM'
+       
+        miElem = etree.SubElement(infoElem,'mapping_info')
+        etree.SubElement(miElem,'mapping_created_by_org')
+        etree.SubElement(miElem,'mapping_created_by_person')
+        etree.SubElement(miElem,'in_collaboration_with')
+    
+        ediElem = etree.SubElement(infoElem,'example_data_info')
+        etree.SubElement(ediElem,'example_data_from')
+        etree.SubElement(ediElem,'example_data_contact_person')
+        etree.SubElement(ediElem,'example_data_source_record')
+        etree.SubElement(ediElem,'generator_policy_info')
+        etree.SubElement(ediElem,'example_data_target_record')
+        etree.SubElement(ediElem,'thesaurus_info')
+        return infoElem
+    
     def ns(self):
-        return '''<namespaces>
-        <namespace prefix="rdfs" uri="http://www.w3.org/2000/01/rdf-schema#"/>
-        <namespace prefix="xsd" uri="http://www.w3.org/2001/XMLSchema#"/>
-        <namespace prefix="crm" uri="http://www.cidoc-crm.org/cidoc-crm/"/>
-        </namespaces>'''
-
+        elem = etree.Element('namespaces')
+        etree.SubElement(elem,'namespace', attrib={'prefix':'rdfs','uri':'http://www.w3.org/2000/01/rdf-schema#'})
+        etree.SubElement(elem,'namespace', attrib={'prefix':'xsd','uri':'http://www.w3.org/2001/XMLSchema#'})
+        etree.SubElement(elem,'namespace', attrib={'prefix':'crm','uri':'http://www.cidoc-crm.org/cidoc-crm/'})
+        return elem
+    
     def toXML(self):
         xmlns_uris = {'xsi': 'http://www.w3.org/2001/XMLSchema-instance/x3ml_v1.0.xsd'}
         root =  etree.Element('x3ml',nsmap=xmlns_uris)
         root.set('source_type','xpath')
         root.set('version','1.0')
-        root.append(etree.fromstring(self.info()))
-        root.append(etree.fromstring(self.ns()))
+        root.append(self.info())
+        root.append(self.ns())
         mElement = etree.SubElement(root,'mappings')
         for m in self.mappings:
             mElement.append(m.toXML())
         return root
+    
     def tostring(self):
         return etree.tostring(self.toXML(), pretty_print=True,xml_declaration=True, encoding='UTF-8')
 

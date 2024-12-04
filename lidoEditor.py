@@ -1,5 +1,5 @@
 from pathlib import Path
-from x3ml import getMapping
+from x3ml import getMapping, ExP
 import LidoRDFConverter as LRC 
 from lxml import etree
 
@@ -10,7 +10,10 @@ def workFolder(): return './work'
 def workMappingFile(): return workFolder()+'/mapping.x3ml'
 def workLidoFile(): return workFolder()+'/lido.xml'
 
-
+def updateExP(X:ExP,p:str,e:str):
+    X.path = p
+    X.entity = e
+ 
 class Mapper():
     def __init__(self, fileName=''):
         self.mappings = getMapping(fileName)
@@ -70,9 +73,7 @@ class Mapper():
     def changeMapping(self, mIndex, request):
         getv = lambda x : request.args.get(x)
         if mIndex < len(self.mappings):
-            S = self.mappings[mIndex].S
-            S.path = getv('path')
-            S.entity = getv('entity')
+            updateExP(self.mappings[mIndex].S,getv('path'),getv('entity'))
             self.store()
         
     def changeLink(self, mIndex, request):
@@ -80,14 +81,9 @@ class Mapper():
         if mIndex < len(self.mappings):
             po_list = self.mappings[mIndex].POs
             lIndex = int(getv('linkIndex'))
-            print(lIndex,len(po_list))
             if lIndex < len(po_list):
-                P = po_list[lIndex].P
-                O = po_list[lIndex].O
-                P.path = getv('path')
-                P.entity = getv('property')
-                O.path = getv('path')
-                O.entity = getv('entity')
+                updateExP(po_list[lIndex].P,getv('path'),getv('property'))
+                updateExP(po_list[lIndex].O,getv('path'),getv('entity'))
                 self.store()
     
     def store(self):

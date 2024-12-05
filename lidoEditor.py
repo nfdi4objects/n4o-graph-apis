@@ -13,6 +13,7 @@ def workLidoFile(): return workFolder()+'/lido.xml'
 def updateExP(X:ExP,p:str,e:str):
     X.path = p
     X.entity = e
+    #print(X)
  
 class Mapper():
     def __init__(self, fileName=''):
@@ -70,20 +71,33 @@ class Mapper():
     def tostring(self):
         return etree.tostring(self.toXML(), pretty_print=True,xml_declaration=True, encoding='UTF-8').decode()
     
-    def changeMapping(self, mIndex, request):
-        getv = lambda x : request.args.get(x)
-        if mIndex < len(self.mappings):
-            updateExP(self.mappings[mIndex].S,getv('path'),getv('entity'))
+    def dispatch(self, mode, request):
+        '''parses request and dispatches the mode'''
+        val = lambda x : request.args.get(x)
+        mIndex = int(val('mappingIndex'))
+        match(mode):
+            case 0:
+                S = ExP(val('path'),val('entity'))
+                self.setDomainValues(mIndex,S)
+            case 1:
+                lIndex = int(val('linkIndex'))
+                P = ExP(val('path'),val('property'))
+                O = ExP(val('path'),val('entity'))
+                self.setLinkValues(mIndex,lIndex, P,O)
+     
+    def setDomainValues(self, mappingIndex, S):
+        '''Changes the mapping domain settings'''
+        if mappingIndex < len(self.mappings):
+            updateExP(self.mappings[mappingIndex].S, S.path, S.entity)
             self.store()
         
-    def changeLink(self, mIndex, request):
-        getv = lambda x : request.args.get(x)
-        if mIndex < len(self.mappings):
-            po_list = self.mappings[mIndex].POs
-            lIndex = int(getv('linkIndex'))
-            if lIndex < len(po_list):
-                updateExP(po_list[lIndex].P,getv('path'),getv('property'))
-                updateExP(po_list[lIndex].O,getv('path'),getv('entity'))
+    def setLinkValues(self, mappingIndex, linkIndex, P, O):
+        '''Changes the link settings'''
+        if mappingIndex < len(self.mappings):
+            po_list = self.mappings[mappingIndex].POs
+            if linkIndex < len(po_list):
+                updateExP(po_list[linkIndex].P, P.path, P.entity)
+                updateExP(po_list[linkIndex].O, O.path, O.entity)
                 self.store()
     
     def store(self):

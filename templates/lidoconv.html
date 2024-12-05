@@ -14,29 +14,50 @@
         }
         function applyDomainAt(dIndex) 
         {
-            let mk = (s) => s+dIndex;
+            let key = (s) => s + dIndex;
             $.ajax({
-                url: "/"+dIndex+"/editMapping",
+                url: "/0/editLido",
                 method: 'GET',
                 contentType: 'application/json',
-                data: "path="+getValue(mk("sPath"))+"&entity="+getValue(mk("sEntity")),
+                data: { "mappingIndex": dIndex,"path": getValue(key("sPath")), "entity":getValue(key("sEntity"))},
                 success: function(response) {}
             });
-         } 
+        } 
         function applyRangeAt(dIndex,rIndex) 
         {
-            let mk = (s) => s+dIndex+"-"+rIndex;
+            let key = (s) => s + dIndex + "-" + rIndex;
             $.ajax({
-                url: "/"+dIndex+"/editLink",
+                url: "/1/editLido",
                 method: 'GET',
                 contentType: 'application/json',
-                data: "linkIndex="+rIndex+"&path="+getValue(mk("poPath"))+"&property="+getValue(mk("pEntity"))+"&entity="+getValue(mk("oEntity")),
+                data: {"mappingIndex":dIndex,"linkIndex":rIndex,"path":getValue(key("poPath")),"property":getValue(key("pEntity")),"entity":getValue(key("oEntity"))},
                 success: function(response) {}
             });
-         } 
-        </script>
+        } 
+         function run() {
+            var xmlData = sourceEditor.getValue();
+            $.ajax({
+                url: '/convertLido',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({xmlData: xmlData}),
+                success: function(response) {outputDisplay.setValue(response.output);}
+            });
+        };
+        function loadDftlLido() {
+            $.ajax({
+                url: '/loadDftlLido',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({code: ''}),
+                success: function(response) {
+                    sourceEditor.setValue(response.output);
+                }
+            });
+        };
+    </script>
 
-    <h3>Input: Mapping(X3ML)</h3>
+    <h3>Input: Mapping(X3ML) <input type="button" value="load default mapping"/><input type="button" value="add mapping"/></h3>
     <div class="container">
         <div id="mapping" style="overflow-y: scroll;">
             <ul>
@@ -51,6 +72,7 @@
                             <label for="lname">entity:</label>
                             <input type="text" id="sEntity{{i}}", value="{{ mapping.S.entity }}">
                             <input type="button" onclick="applyDomainAt('{{i}}')" value="submit"/>
+                            <input type="button" value="add link"/>
                         </form> 
                     </li>
                     {% for link in mapping.POs %}
@@ -63,7 +85,8 @@
                                 <input type="text" id="pEntity{{i}}-{{j}}", value="{{ link.P.entity }}">
                                 <label for="lname">entity:</label>
                                 <input type="text" id="oEntity{{i}}-{{j}}", value="{{ link.O.entity }}">
-                                <input type="button" onclick="applyRangeAt('{{i}}','{{j}}')"  value="Submit">
+                                <input type="button" onclick="applyRangeAt('{{i}}','{{j}}')"  value="submit">
+                                <input type="button" value="delete"/>
                               </form> 
                         </li>
                     {% endfor %}
@@ -74,21 +97,12 @@
         </div>
     </div>
     
-    <h3>Output: Lido (XML,left), RDF (TT,rightL)</h3>
+    <h3>Output: Lido (XML) => RDF (TTL)   <input type="button" onclick="loadDftlLido()"  value="load default Lido"/> <input type="button" onclick="run()" value="convert"/></h3>
     <div class="container">
         <div id="editor">{{config.get('sourceTxt','')}}</div>
         <div id="output"></div>
     </div>
 
-    <div class="btn-container">
-        <button class="black-button" id="dfltLidoBtn">
-            <span id="buttonText">Load default data</span>
-        </button>  
-        <button class="black-button" id="convertBtn">
-            <span id="buttonText">Convert</span>
-        </button>  
-    </div>
- 
     <script>
         var toggler = document.getElementsByClassName("caret");
         var i;
@@ -109,29 +123,5 @@
         var sourceEditor = makeEdit("editor");
         var outputDisplay = makeEdit("output","","ace/mode/turtle");
         outputDisplay.setOptions({ "readOnly" : true})
-
-        $("#convertBtn").click(function() {
-            var xmlData = sourceEditor.getValue();
-            $.ajax({
-                url: '/convertLido',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({xmlData: xmlData}),
-                success: function(response) {
-                    outputDisplay.setValue(response.output);
-                }
-            });
-        });
-        $("#dfltLidoBtn").click(function() {
-            $.ajax({
-                url: '/loadDftlLido',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({code: ''}),
-                success: function(response) {
-                    sourceEditor.setValue(response.output);
-                }
-            });
-        });
     </script>
  {% endblock %}

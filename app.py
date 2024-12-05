@@ -194,14 +194,9 @@ def loadDftlLido():
 def convertLido():
     return jsonify({'output': lidoEditor.processRequest(request)})
 
-@app.route('/<int:mIndex>/editMapping', methods=('GET', 'POST'))
-def editMapping(mIndex):
-    mapper.changeMapping(mIndex,request)
-    return redirect(url_for('lidoconv'))
-
-@app.route('/<int:mIndex>/editLink', methods=('GET', 'POST'))
-def editLink(mIndex):
-    mapper.changeLink(mIndex,request)
+@app.route('/<int:mode>/editLido', methods=('GET', 'POST'))
+def editLido(mode):
+    mapper.dispatch(mode,request)
     return redirect(url_for('lidoconv'))
 
 def extend_examples(examples):

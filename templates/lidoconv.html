@@ -12,28 +12,29 @@
         {
             return document.getElementById(s).value;
         }
+        function ajaxCall(url,data, fun = function(response) {}) 
+        {
+            $.ajax({
+                url: url,
+                method: 'GET',
+                contentType: 'application/json',
+                data: data,
+                success: fun
+            });
+        } 
+
         function applyDomainAt(dIndex) 
         {
             let key = (s) => s + dIndex;
-            $.ajax({
-                url: "/0/editLido",
-                method: 'GET',
-                contentType: 'application/json',
-                data: { "mappingIndex": dIndex,"path": getValue(key("sPath")), "entity":getValue(key("sEntity"))},
-                success: function(response) {}
-            });
+            ajaxCall( "/0/editLido", { "mappingIndex": dIndex,"path": getValue(key("sPath")), "entity":getValue(key("sEntity"))})
         } 
+        
         function applyRangeAt(dIndex,rIndex) 
         {
             let key = (s) => s + dIndex + "-" + rIndex;
-            $.ajax({
-                url: "/1/editLido",
-                method: 'GET',
-                contentType: 'application/json',
-                data: {"mappingIndex":dIndex,"linkIndex":rIndex,"path":getValue(key("poPath")),"property":getValue(key("pEntity")),"entity":getValue(key("oEntity"))},
-                success: function(response) {}
-            });
+            ajaxCall("/1/editLido", {"mappingIndex":dIndex,"linkIndex":rIndex,"path":getValue(key("poPath")),"property":getValue(key("pEntity")),"entity":getValue(key("oEntity"))})
         } 
+
          function run() {
             var xmlData = sourceEditor.getValue();
             $.ajax({
@@ -44,6 +45,7 @@
                 success: function(response) {outputDisplay.setValue(response.output);}
             });
         };
+        
         function loadDftlLido() {
             $.ajax({
                 url: '/loadDftlLido',
@@ -104,14 +106,13 @@
     </div>
 
     <script>
-        var toggler = document.getElementsByClassName("caret");
-        var i;
-        for (i = 0; i < toggler.length; i++) {
-            toggler[i].addEventListener("click", function() {
+        for (const e of document.getElementsByClassName("caret"))
+        {
+            e.addEventListener("click", function() {
                 this.parentElement.querySelector(".nested").classList.toggle("active");
                 this.classList.toggle("caret-down");
             });
-        } 
+        }
   
         function makeEdit(label, style="ace/theme/monokai",fmt="ace/mode/xml" ) {
             var ed = ace.edit(label);

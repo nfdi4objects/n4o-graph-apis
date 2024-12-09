@@ -12,11 +12,11 @@
         {
             return document.getElementById(s).value;
         }
-        function ajaxCall(url,data, fun = function(response) {}) 
+        function ajaxCall(url,data, fun = function(response) {},method='POST') 
         {
             $.ajax({
                 url: url,
-                method: 'GET',
+                method: method,
                 contentType: 'application/json',
                 data: data,
                 success: fun
@@ -26,36 +26,34 @@
         function applyDomainAt(dIndex) 
         {
             let key = (s) => s + dIndex;
-            ajaxCall( "/0/editLido", { "mappingIndex": dIndex,"path": getValue(key("sPath")), "entity":getValue(key("sEntity"))})
+            let data =  { "mappingIndex": dIndex,"path": getValue(key("sPath")), "entity":getValue(key("sEntity"))};
+            ajaxCall( "/0/editLido",JSON.stringify(data));
         } 
         
         function applyRangeAt(dIndex,rIndex) 
         {
             let key = (s) => s + dIndex + "-" + rIndex;
-            ajaxCall("/1/editLido", {"mappingIndex":dIndex,"linkIndex":rIndex,"path":getValue(key("poPath")),"property":getValue(key("pEntity")),"entity":getValue(key("oEntity"))})
+            let data = {"mappingIndex":dIndex,"linkIndex":rIndex,"path":getValue(key("poPath")),"property":getValue(key("pEntity")),"entity":getValue(key("oEntity"))};
+            ajaxCall("/1/editLido", JSON.stringify(data));
         } 
 
-         function run() {
-            var xmlData = sourceEditor.getValue();
-            $.ajax({
-                url: '/convertLido',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({xmlData: xmlData}),
-                success: function(response) {outputDisplay.setValue(response.output);}
-            });
+        function deleteLink(dIndex,rIndex) 
+        {
+            let key = (s) => s + dIndex + "-" + rIndex;
+            let data = {"mappingIndex":dIndex,"linkIndex":rIndex};
+            ajaxCall("/2/editLido", JSON.stringify(data));
+        } 
+
+        function run() {
+            let data = {xmlData: sourceEditor.getValue()};
+            let onSuccess = function(response) {outputDisplay.setValue(response.output);};
+            ajaxCall("/convertLido", JSON.stringify(data),onSuccess);
         };
         
         function loadDftlLido() {
-            $.ajax({
-                url: '/loadDftlLido',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({code: ''}),
-                success: function(response) {
-                    sourceEditor.setValue(response.output);
-                }
-            });
+            let data = {code: ''};
+            let onSuccess = function(response) {sourceEditor.setValue(response.output);} ;
+            ajaxCall("/loadDftlLido", JSON.stringify(data),onSuccess);
         };
     </script>
 
@@ -88,7 +86,7 @@
                                 <label for="lname">entity:</label>
                                 <input type="text" id="oEntity{{i}}-{{j}}", value="{{ link.O.entity }}">
                                 <input type="button" onclick="applyRangeAt('{{i}}','{{j}}')"  value="submit">
-                                <input type="button" value="delete"/>
+                                <input type="button" onclick="deleteLink('{{i}}','{{j}}')" value="delete"/>
                               </form> 
                         </li>
                     {% endfor %}
@@ -99,7 +97,7 @@
         </div>
     </div>
     
-    <h3>Output: Lido (XML) => RDF (TTL)   <input type="button" onclick="loadDftlLido()"  value="load default Lido"/> <input type="button" onclick="run()" value="convert"/></h3>
+    <h3>Output: Lido (XML) => RDF (TTL) <input type="button" onclick="loadDftlLido()"  value="load default Lido"/> <input type="button" onclick="run()" value="convert"/></h3>
     <div class="container">
         <div id="editor">{{config.get('sourceTxt','')}}</div>
         <div id="output"></div>

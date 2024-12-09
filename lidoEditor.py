@@ -73,7 +73,7 @@ class Mapper():
     
     def dispatch(self, mode, request):
         '''parses request and dispatches the mode'''
-        val = lambda x : request.args.get(x)
+        val = lambda x : request.json[x]
         mIndex = int(val('mappingIndex'))
         match(mode):
             case 0:
@@ -84,6 +84,10 @@ class Mapper():
                 P = ExP(val('path'),val('property'))
                 O = ExP(val('path'),val('entity'))
                 self.setLinkValues(mIndex,lIndex, P,O)
+            case 2:
+                lIndex = int(val('linkIndex'))
+                print("dispatch ", mode, lIndex)
+                self.mappings[mIndex].POs.pop(lIndex)
      
     def setDomainValues(self, mappingIndex, S):
         '''Changes the mapping domain settings'''

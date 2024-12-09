@@ -25,6 +25,7 @@ def jsonify(data, status=200, indent=3, sort_keys=False):
 
 
 app = Flask(__name__)
+app.config["TEMPLATES_AUTO_RELOAD"] = True
 githash = None
 mapper = None
 
@@ -197,7 +198,7 @@ def convertLido():
 @app.route('/<int:mode>/editLido', methods=('GET', 'POST'))
 def editLido(mode):
     mapper.dispatch(mode,request)
-    return redirect(url_for('lidoconv'))
+    return lidoconv()
 
 def extend_examples(examples):
     extended = []

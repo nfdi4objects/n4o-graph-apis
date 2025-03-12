@@ -43,15 +43,22 @@ File system read access to the import staging area is required, if enabled via c
 Use Python flask [deployment method of your choice](https://flask.palletsprojects.com/en/2.0.x/deploying/#self-hosted-options)
 or Docker.
 
-Docker images are generated and [published at GitHub](https://github.com/nfdi4objects/n4o-graph-apis/pkgs/container/n4o-graph-apis) from the `main` branch. Alternatively build the image locally [as described below](#development).
+Docker images are generated and [published at GitHub](https://github.com/nfdi4objects/n4o-graph-apis/pkgs/container/n4o-graph-apis) from the `main` branch (alternatively build the image locally [as described below](#development)).
 
-There is a [`docker-compose.yml`](docker-compose.yml) for deployment. If needed, it can be configured with a local file `.env`. This is work in progress and details may change!
+There is a [`docker-compose.yml`](docker-compose.yml) for deployment. If needed, it can be configured with a local file `.env` to set Docker image (`IMAGE`), Docker container name (`CONTAINER`), Docker network (`NETWORK`), config file (`CONFIG`), port (`PORT`) and staging area (`STAGE`). 
 
 ~~~sh
+docker network create n4onetwork # unless it already exists
 docker compose create
 docker compose start
 docker compose stop
 ~~~~
+
+To test with a local triple store at <http://localhost:3030/n4o>, use this URL in the config file and use `docker-compose-host.yml`:
+
+~~~sh
+docker compose -f docker-compose-host.yml create
+~~~
 
 ## Configuration
 
@@ -59,11 +66,13 @@ A local file `config.yaml` is needed with configuration. See [`config.example.ya
 
 ### SPARQL
 
-The default configuration expects a SPARL endpoint at <http://localhost:3030/n4o-rdf-import/>. This can be provided with Fuseki triple store and a database `n4o-rdf-import` locally created like this:
+The default configuration expects a SPARL endpoint at <http://localhost:3030/n4o/>. This can be provided with Fuseki triple store and a database `n4o` locally created like this:
 
 ~~~sh
-curl --data "dbName=n4o-rdf-import&dbType=tdb2" http://localhost:3030/$/datasets
+curl --data "dbName=n4o&dbType=tdb2" http://localhost:3030/$/datasets
 ~~~
+
+Alternatively use the preconfigured Docker container [n4o-fuseki](https://github.com/nfdi4objects/n4o-fuseki#readme).
 
 The RDF database is expected to be grouped in named graphs:
 

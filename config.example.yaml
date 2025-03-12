@@ -3,7 +3,7 @@ debug: false
 
 # SPARQL endpoint and examples (required)
 sparql:
-  endpoint: http://localhost:3030/n4o-rdf-import/
+  endpoint: http://localhost:3030/n4o
   examples:
     # examples given in files
     - queries/*.rq

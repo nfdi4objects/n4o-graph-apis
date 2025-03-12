@@ -117,7 +117,7 @@ def collection(id, path):
     html_wanted = "html" in request.headers["Accept"] or format == "html"
 
     stage_base = app.config.get("stage")
-    stage_path = os.path.join(stage_base, str(id)) if stage_base else None
+    stage_path = os.path.join(stage_base, 'collection', str(id)) if stage_base else None
     if path is not None:
         if stage_base:
             if path == "":

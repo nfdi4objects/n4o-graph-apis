@@ -82,7 +82,7 @@ The RDF database is expected to be grouped in named graphs:
 - Graphs `http://bartoc.org/en/node/X` where X is an integer contain information from individual terminologies
 - The default graph must be configured as union graph.
 
-See <https://github.com/nfdi4objects/n4o-import> for additional information to set up, initialize and fill the Triple Store.
+See [n4o-graph-importer](https://github.com/nfdi4objects/n4o-graph-importer#readme) for a component to ensure RDF data is only imported into the triple store as expected.
 
 ### Cypher
 

@@ -2,11 +2,13 @@ import json
 import re
 import sys
 import os
-from flask import Flask, render_template, request, make_response, send_from_directory
+from flask import Flask, render_template, request, make_response, send_from_directory,Response
 from waitress import serve
 import argparse
 import mimeparse
 import traceback
+import glob
+import requests
 from rdflib import URIRef
 from datetime import datetime
 
@@ -206,7 +208,6 @@ def cypher_form():
 def sparql_form():
     return render('sparql.html', **config["sparql"])
 
-
 @app.route('/tools')
 def tools():
     return render('tools.html')
@@ -215,6 +216,37 @@ def tools():
 def quit(msg):
     print(msg, file=sys.stderr)
     sys.exit(1)
+
+SITE_NAME = "http://localhost:5000/"
+
+@app.route("/LidoBP/",methods=['GET','POST','DELETE'],defaults={'path':''})
+@app.route("/LidoBP/<path:path>",methods=["GET","POST", "DELETE"])
+def proxy(path):
+    global SITE_NAME
+    excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
+    cleanHeaders = lambda resp :  [ (k,v) for k,v in resp.raw.headers.items() if k.lower() not in excluded_headers ]
+    match request.method:
+        case 'GET':
+            res = requests.get(f"{SITE_NAME}LidoBP/{path}")
+        case 'DELETE':
+            res = requests.delete(f"{SITE_NAME}LidoBP/{path}",headers=request.headers, data=request.data)
+        case "POST":
+            res = requests.post(f"{SITE_NAME}LidoBP/{path}",headers=request.headers, json=request.json, data=request.data)
+        case _:
+            res = f'Unsupported method {request.method}'
+    return Response(res.content, res.status_code, cleanHeaders(res))
+
+def extend_examples(examples):
+    extended = []
+    for ex in examples:
+        if isinstance(ex, str):
+            for file in glob.glob(ex):
+                lines = open(file).read().split("\n")
+                name = re.sub(r"^#\s*", "", lines[0])
+                extended.append({"name": name, "query": "\n".join(lines)})
+        else:
+            extended.append(ex)
+    return extended
 
 
 if __name__ == '__main__':
@@ -243,8 +275,9 @@ if __name__ == '__main__':
     except Exception:
         quit(f"SPARQL endpoint {endpoint} is not available!")
 
-    if config["stage"] and not os.path.isdir(config["stage"]):
-        quit(f"N4o import directory {config['stage']} is not available!")
+    stage = config.get("stage")
+    if stage and not os.path.isdir(stage):
+        quit(f"N4o import directory {stage} is not available!")
 
     if "cypher" in config:
         # TODO: check if backend is alive, else exit

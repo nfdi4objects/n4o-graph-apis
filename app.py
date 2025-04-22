@@ -246,19 +246,6 @@ def proxy(path):
     return Response(res.content, res.status_code, cleanHeaders(res))
 
 
-def extend_examples(examples):
-    extended = []
-    for ex in examples:
-        if isinstance(ex, str):
-            for file in glob.glob(ex):
-                lines = open(file).read().split("\n")
-                name = re.sub(r"^#\s*", "", lines[0])
-                extended.append({"name": name, "query": "\n".join(lines)})
-        else:
-            extended.append(ex)
-    return extended
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--port', type=int,

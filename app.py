@@ -2,7 +2,7 @@ import json
 import re
 import sys
 import os
-from flask import Flask, render_template, request, make_response, send_from_directory,Response
+from flask import Flask, render_template, request, make_response, send_from_directory, Response
 from waitress import serve
 import argparse
 import mimeparse
@@ -119,7 +119,8 @@ def collection(id, path):
     html_wanted = "html" in request.headers["Accept"] or format == "html"
 
     stage_base = app.config.get("stage")
-    stage_path = os.path.join(stage_base, 'collection', str(id)) if stage_base else None
+    stage_path = os.path.join(stage_base, 'collection',
+                              str(id)) if stage_base else None
     if path is not None:
         if stage_base:
             if path == "":
@@ -208,6 +209,7 @@ def cypher_form():
 def sparql_form():
     return render('sparql.html', **config["sparql"])
 
+
 @app.route('/tools')
 def tools():
     return render('tools.html')
@@ -217,24 +219,32 @@ def quit(msg):
     print(msg, file=sys.stderr)
     sys.exit(1)
 
+
 SITE_NAME = "http://localhost:5000/"
 
-@app.route("/LidoBP/",methods=['GET','POST','DELETE'],defaults={'path':''})
-@app.route("/LidoBP/<path:path>",methods=["GET","POST", "DELETE"])
+
+@app.route("/LidoBP/", methods=['GET', 'POST', 'DELETE'], defaults={'path': ''})
+@app.route("/LidoBP/<path:path>", methods=["GET", "POST", "DELETE"])
 def proxy(path):
     global SITE_NAME
-    excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
-    cleanHeaders = lambda resp :  [ (k,v) for k,v in resp.raw.headers.items() if k.lower() not in excluded_headers ]
+    excluded_headers = ['content-encoding',
+                        'content-length', 'transfer-encoding', 'connection']
+
+    def cleanHeaders(resp): return [
+        (k, v) for k, v in resp.raw.headers.items() if k.lower() not in excluded_headers]
     match request.method:
         case 'GET':
             res = requests.get(f"{SITE_NAME}LidoBP/{path}")
         case 'DELETE':
-            res = requests.delete(f"{SITE_NAME}LidoBP/{path}",headers=request.headers, data=request.data)
+            res = requests.delete(
+                f"{SITE_NAME}LidoBP/{path}", headers=request.headers, data=request.data)
         case "POST":
-            res = requests.post(f"{SITE_NAME}LidoBP/{path}",headers=request.headers, json=request.json, data=request.data)
+            res = requests.post(
+                f"{SITE_NAME}LidoBP/{path}", headers=request.headers, json=request.json, data=request.data)
         case _:
             res = f'Unsupported method {request.method}'
     return Response(res.content, res.status_code, cleanHeaders(res))
+
 
 def extend_examples(examples):
     extended = []

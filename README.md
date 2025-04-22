@@ -23,6 +23,7 @@ For additional information see the [Knowledge Graph Manual](https://nfdi4objects
 - [Configuration](#configuration)
   - [SPARQL](#sparql)
   - [Cypher](#cypher)
+  - [Tools](#tools)
 - [Usage](#usage)
   - [SPARQL API](#sparql-api)
   - [Linked Open Data](#linked-open-data)
@@ -32,7 +33,7 @@ For additional information see the [Knowledge Graph Manual](https://nfdi4objects
 
 ## Requirements
 
-Requires Python >= 3.5 to run from sources (Python modules are listed in `requirements.txt`) or Docker.
+Requires Python >= 3.6 to run from sources (Python modules are listed in `requirements.txt`) or Docker.
 
 A backend API (SPARQL and optional Neo4J/Cypher) must be available and [configured](#configuration).
 
@@ -87,6 +88,13 @@ See [n4o-graph-importer](https://github.com/nfdi4objects/n4o-graph-importer#read
 ### Cypher
 
 The Cypher backend is optional. When using Neo4j (or compatible) make sure the database is read-only because this application only applies a simple filter to detect Cypher write queries!
+
+### Tools
+
+Configuration key `tools` can be used to add web applications either as simple links or made available at an URL path via HTTP Proxy. Each tool requires
+
+- a `name` and a `description`
+- either an `url` with an external link, or both an URL `path` and a `backend` URL to pass queries to 
 
 ## Usage
 

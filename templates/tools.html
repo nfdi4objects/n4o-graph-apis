@@ -4,7 +4,7 @@
   <ul>
     {% for tool in config.tools %}
       <li>
-        <a href="{{ tool.url }}">{{ tool.name }}</a>{% if tool.description %}:
+          <a href="{% if tool.url %}{{ tool.url }}{% else %}{{ tool.path }}{% endif %}">{{ tool.name }}</a>{% if tool.description %}:
         {{ tool.description }}
         {% endif %}
       </li>

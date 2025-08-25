@@ -241,7 +241,7 @@ if __name__ == '__main__':
     try:
         app.config["sparql-proxy"].alive()
     except Exception:
-        quit(f"SPARQL endpoint {endpoint} is not available!")
+        print(f"SPARQL endpoint {endpoint} is not available!", file=sys.stderr)
 
     stage = config.get("stage")
     if stage and not os.path.isdir(stage):

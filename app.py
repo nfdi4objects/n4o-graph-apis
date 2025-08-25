@@ -4,6 +4,7 @@ import sys
 import os
 from flask import Flask, render_template, request, make_response, send_from_directory
 from waitress import serve
+from argparse import ArgumentParser, BooleanOptionalAction
 import argparse
 import mimeparse
 import traceback
@@ -218,14 +219,14 @@ def quit(msg):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+    parser = ArgumentParser()
     parser.add_argument('-p', '--port', type=int,
                         default=8000, help="Server port")
     parser.add_argument(
-        '-w', '--wsgi', action=argparse.BooleanOptionalAction, help="Use WSGI server")
+        '-w', '--wsgi', action=BooleanOptionalAction, help="Use WSGI server")
     parser.add_argument('-c', '--config', type=str,
                         default="config.yaml", help="Config file")
-    parser.add_argument('-d', '--debug', action=argparse.BooleanOptionalAction)
+    parser.add_argument('-d', '--debug', action=BooleanOptionalAction)
     args = parser.parse_args()
 
     try:
@@ -241,7 +242,7 @@ if __name__ == '__main__':
     try:
         app.config["sparql-proxy"].alive()
     except Exception:
-        print(f"SPARQL endpoint {endpoint} is not available!", file=sys.stderr)
+        quit(f"SPARQL endpoint {endpoint} is not available!")
 
     stage = config.get("stage")
     if stage and not os.path.isdir(stage):
@@ -257,8 +258,8 @@ if __name__ == '__main__':
         print(f"Using Cypher backend {config['cypher']['uri']}")
         app.config["cypher-backend"] = CypherBackend(config['cypher'])
 
-    opts = {"port": args.port, "debug": config["debug"]}
     if args.wsgi:
-        serve(app, host="0.0.0.0", **opts)
+        print(f"Starting WSGI server at http://localhost:{args.port}/")
+        serve(app, host="0.0.0.0", port=args.port, threads=8)
     else:
-        app.run(host="0.0.0.0", **opts)
+        app.run(host="0.0.0.0", port=args.port, debug=config["debug"])

@@ -2,7 +2,8 @@
  
 {% block content %}
 
-<script src="https://unpkg.com/@triply/yasr/build/yasr.min.js"></script>
+<script src="{{url_for('static',filename='node_modules/@triply/yasr/build/yasr.min.js')}}"></script>
+
 
 <p>
   A collection is an individual set of research data imported into the knowledge graph.

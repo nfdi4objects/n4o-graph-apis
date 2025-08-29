@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <script src="https://unpkg.com/@triply/yasr/build/yasr.min.js"></script>
-  <script src="https://unpkg.com/@triply/yasqe/build/yasqe.min.js"></script>
-  <script src="{{url_for('static',filename='sparql-gui.js')}}"></script>
+ <script src="{{url_for('static',filename='node_modules/@triply/yasr/build/yasr.min.js')}}"></script>
+ <script src="{{url_for('static',filename='node_modules/@triply/yasqe/build/yasqe.min.js')}}"></script>
+ <script src="{{url_for('static',filename='sparql-gui.js')}}"></script>
 
   {% if 'examples' in config.sparql %}
     {% set examples = config.sparql.examples %}

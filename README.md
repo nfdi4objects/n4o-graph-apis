@@ -25,7 +25,6 @@ For additional information see the [Knowledge Graph Manual](https://nfdi4objects
 - [Usage](#usage)
   - [SPARQL API](#sparql-api)
   - [Linked Open Data](#linked-open-data)
-  - [Property Graph API](#property-graph-api)
 - [Development](#development)
 - [License](#license)
 

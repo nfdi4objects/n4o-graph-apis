@@ -11,4 +11,3 @@ package-lock.json
 # config files
 config.yaml
 .env
-stage

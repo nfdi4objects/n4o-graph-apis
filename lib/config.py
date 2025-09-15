@@ -38,7 +38,8 @@ class Config(UserDict):
         else:
             self.data = {}
 
-        self.data["stage"] = os.getenv('STAGE', 'stage')
+        if not self.get("stage", None):
+            self.data["stage"] = os.getenv('STAGE', 'stage')
         if not self.data.get("sparql", None):
             self.data["sparql"] = {
                 "endpoint": os.getenv('SPARQL', "http://localhost:3030/n4o")

@@ -8,6 +8,7 @@ def client():
     app.testing = True
 
     config = Config()
+    config["stage"] = "tests/stage"
     # data = Path(__file__).parent
     # init(title="N4O Graph Import API TEST",
     #     stage=stage, sparql=sparqlApi, data=data)

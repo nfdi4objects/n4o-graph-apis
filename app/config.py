@@ -34,6 +34,8 @@ class Config(UserDict):
                 msg += " at line %s char %s" % (mark.line + 1, mark.column + 1)
             raise Exception(msg)
 
+        self.data["stage"] = os.getenv('STAGE', 'stage')
+
         if debug:
             self.data["debug"] = True
         elif "debug" not in self.data:

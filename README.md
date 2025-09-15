@@ -65,6 +65,10 @@ docker compose -f docker-compose-host.yml create
 
 A local file `config.yaml` is needed with configuration. See [`config.example.yaml`](config.example.yaml) as boilerplate and documentation. Configuration is only loaded once at startup.
 
+In addition the following environment variables can be used:
+
+- `STAGE`: readable stage directory. Default: `stage`
+
 ### SPARQL
 
 The default configuration expects a SPARL endpoint at <http://localhost:3030/n4o/>. This can be provided with Fuseki triple store and a database `n4o` locally created like this:
@@ -77,7 +81,7 @@ Alternatively use the preconfigured Docker container [n4o-fuseki](https://github
 
 The RDF database is expected to be grouped in named graphs:
 
-- Graph `https://graph.nfdi4objects.net/collection/> contains information about collections
+- Graph `https://graph.nfdi4objects.net/collection/` contains information about collections
 - Graphs `https://graph.nfdi4objects.net/collection/X` where X is an integer contain information from individual collections
 - Graph `https://graph.nfdi4objects.net/terminology/` contains information about terminologies
 - Graphs `http://bartoc.org/en/node/X` where X is an integer contain information from individual terminologies

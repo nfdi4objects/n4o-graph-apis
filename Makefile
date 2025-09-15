@@ -1,12 +1,13 @@
+deps: .venv
+.venv: requirements.txt requirements-dev.txt
+	python -m venv .venv
+	.venv/bin/pip install -r requirements.txt
+	.venv/bin/pip install -r requirements-dev.txt
+
 test: .venv
 	.venv/bin/python -m pytest
 
-.venv: requirements.txt
-	python -m venv .venv
-	.venv/bin/pip install -r requirements.txt
-
 dev: .venv
-	.venv/bin/pip install -r requirements-dev.txt
 	.venv/bin/python app.py --debug
 
 lint: .venv

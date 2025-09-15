@@ -23,18 +23,26 @@ def extend_examples(api):
 
 
 class Config(UserDict):
-    def __init__(self, file, debug):
-        try:
-            with open(file) as stream:
-                self.data = yaml.safe_load(stream)
-        except yaml.YAMLError as err:
-            msg = "Error in %s" % (file)
-            if hasattr(err, 'problem_mark'):
-                mark = err.problem_mark
-                msg += " at line %s char %s" % (mark.line + 1, mark.column + 1)
-            raise Exception(msg)
+    def __init__(self, file=None, debug=False):
+        if file:
+            try:
+                with open(file) as stream:
+                    self.data = yaml.safe_load(stream)
+            except yaml.YAMLError as err:
+                msg = "Error in %s" % (file)
+                if hasattr(err, 'problem_mark'):
+                    mark = err.problem_mark
+                    msg += " at line %s char %s" % (mark.line + 1,
+                                                    mark.column + 1)
+                raise Exception(msg)
+        else:
+            self.data = {}
 
         self.data["stage"] = os.getenv('STAGE', 'stage')
+        if not self.data.get("sparql", None):
+            self.data["sparql"] = {
+                "endpoint": os.getenv('SPARQL', "http://localhost:3030/n4o")
+            }
 
         if debug:
             self.data["debug"] = True
@@ -51,8 +59,6 @@ class Config(UserDict):
             self.data["import"] = {}
 
         extend_examples(self.data["sparql"])
-        if "cypher" in self.data:
-            extend_examples(self.data["cypher"])
 
         if "tools" not in self.data:
             self.data["tools"] = []

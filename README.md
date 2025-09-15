@@ -8,8 +8,7 @@
 
 This repository implements public web APIs to the NFDI4Objects Knowledge Graph,
 available at <https://graph.nfdi4objects.net/>. The Knowledge Graph database
-can be queried [with SPARQL](#sparql-api) and (if configured) [with
-Cypher](#property-graph-api) respectively using the API endpoints provided by
+can be queried [with SPARQL](#sparql-api) using the API endpoints provided by
 this web application. In addition, collection URIs starting with
 <https://graph.nfdi4objects.net/collection/> are served as linked open data and
 import reports can be inspected.
@@ -22,7 +21,6 @@ For additional information see the [Knowledge Graph Manual](https://nfdi4objects
 - [Installation](#installation)
 - [Configuration](#configuration)
   - [SPARQL](#sparql)
-  - [Cypher](#cypher)
   - [Tools](#tools)
 - [Usage](#usage)
   - [SPARQL API](#sparql-api)
@@ -35,7 +33,7 @@ For additional information see the [Knowledge Graph Manual](https://nfdi4objects
 
 Requires Python >= 3.6 to run from sources (Python modules are listed in `requirements.txt`) or Docker.
 
-A backend API (SPARQL and optional Neo4J/Cypher) must be available and [configured](#configuration).
+A backend API (SPARQL) must be available and [configured](#configuration).
 
 File system read access to the import staging area is required, if enabled via configuration.
 
@@ -89,10 +87,6 @@ The RDF database is expected to be grouped in named graphs:
 
 See [n4o-graph-importer](https://github.com/nfdi4objects/n4o-graph-importer#readme) for a component to ensure RDF data is only imported into the triple store as expected.
 
-### Cypher
-
-The Cypher backend is optional. When using Neo4j (or compatible) make sure the database is read-only because this application only applies a simple filter to detect Cypher write queries!
-
 ### Tools
 
 Configuration key `tools` can be used to add web applications either as simple links or made available at an URL path via HTTP Proxy. Each tool requires
@@ -117,45 +111,6 @@ DESCRIBE <https://graph.nfdi4objects.net/collection/1> FROM <https://graph.nfdi4
 The RDF serialization is determined via HTTP Content Negotiation or with optional query parameter `format`.
 
 Information about terminologies will be made available from <https://graph.nfdi4objects.net/terminology/>.
-
-### Property Graph API
-
-The Property Graph API at `/api/cypher` expects a HTTP GET query parameter `query` with a Cypher query or a HTTP POST request with a Cypher query as request body. The return format is a (possibly empty) JSON array of result objects. On failure, an error object is returned. Each response objects is maps query variables to values. Each value is one of:
-
-- number, string, boolean, or null
-- array of values
-- [PG-JSONL](https://pg-format.github.io/specification/#pg-json) node or edge object for nodes and edges
-- [PG-JSON](https://pg-format.github.io/specification/#pg-jsonl) graph object for pathes
-
-The following examples use n4o-graph-apis application running at <https://graph.nfdi4objects.net/> for illustration. Use base URL
-<http://localhost:8000/> for testing a local installation:
-
-```python
-import requests
-import json
-
-api = "https://graph.nfdi4objects.net/api/cypher"
-query = "MATCH (m:E16_Measurement) RETURN m LIMIT 2"
-results = requests.get(api, { "query": query }).json()
-```
-
-```js
-const api = "https://graph.nfdi4objects.net/api/cypher"
-const query = "MATCH (m:E16_Measurement) RETURN m LIMIT 2"
-results = await fetch(api, { query }).then(res => res.json())
-```
-
-To query with curl, the Cypher query must be URL-escaped, this is done by using argument [--data-urlencode](https://curl.se/docs/manpage.html#--data-urlencode):
-
-```sh
-curl -G https://graph.nfdi4objects.net/api/cypher --data-urlencode 'query=MATCH (m:E16_Measurement) RETURN m LIMIT 2'
-```
-
-The Cypher query can also be passed from a file:
-
-```sh
-curl -G https://graph.nfdi4objects.net/api/cypher --data-urlencode 'query@queryfile.cypher'
-```
 
 ## Development
 

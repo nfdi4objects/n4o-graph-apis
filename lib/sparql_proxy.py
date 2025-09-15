@@ -73,6 +73,3 @@ class SparqlProxy:
             else:
                 self.wrapper.clearParameter(name)
         return self.wrapper.queryAndConvert()
-
-    def alive(self):
-        return self.request("ASK WHERE { ?s ?p ?o . }")

@@ -12,7 +12,6 @@
     <script src="{{url_for('static',filename='jquery-3.7.1.slim.min.js')}}"></script>
     <script src="{{url_for('static',filename='codemirror/codemirror.js')}}"></script>
     <script src="{{url_for('static',filename='codemirror/runmode.js')}}"></script>
-    <script src="{{url_for('static',filename='codemirror/cypher.js')}}"></script>
     <script src="{{url_for('static',filename='codemirror/javascript.js')}}"></script>
     <script src="{{url_for('static',filename='codemirror/pg.js')}}"></script>
     <script src="{{url_for('static',filename='common.js')}}"></script>
@@ -34,15 +33,6 @@
             <a class="nav-link" href="{{url_for('sparql_form')}}">SPARQL</a>
           {% endif %}
         </li>
-        {% if config.cypher %}
-        <li>
-           {% if request.path.startswith("/cypher") %}
-              <a class="nav-link selected" href="{{url_for('cypher_form')}}">Cypher</a>
-            {% else %}
-              <a class="nav-link" href="{{url_for('cypher_form')}}">Cypher</a>
-            {% endif %}
-        </li>
-        {% endif %}
         <li class="nav-item">
           {% if request.path.startswith("/collection") %}
             <a class="nav-link selected" href="{{url_for('collection')}}">Collections</a>

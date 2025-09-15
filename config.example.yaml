@@ -12,18 +12,6 @@ sparql:
       query: |
         SELECT DISTINCT ?class WHERE { [] a ?class }  examples:
 
-# Cypher endpoint and examples (optional)
-cypher:
-  uri: bolt://localhost:7687
-  user: ""
-  password: ""
-  timeout: 30
-  examples:
-    - name: Get some people
-      query: "MATCH (n:E21_Person) RETURN n LIMIT 10"
-    - name: List all classes (= node labels)
-      query: "MATCH (n)\n RETURN distinct labels(n) AS classes, count(*) AS count"
-
 # Links to tools and references (optional)
 tools:
   - name: LIDO-Schulung

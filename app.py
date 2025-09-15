@@ -1,17 +1,15 @@
 import json
-import re
 import sys
 import os
 from flask import Flask, render_template, request, make_response, send_from_directory
 from waitress import serve
 from argparse import ArgumentParser, BooleanOptionalAction
-import argparse
 import mimeparse
 import traceback
 from rdflib import URIRef
 from datetime import datetime
 
-from app import CypherBackend, SparqlProxy, ApiError, Config, enable_proxy
+from lib import SparqlProxy, ApiError, Config, enable_proxy
 
 
 def file_info(path, name):
@@ -169,38 +167,9 @@ def collection(id, path):
         return response
 
 
-# Detect write queries the simple way. This also block some valid read-queries.
-def isAllowedCypherQuery(cmd: str) -> bool:
-    return re.search('merge|create|delete|set', cmd, re.IGNORECASE) is None
-
-
-@app.route('/api/cypher', methods=('GET', 'POST'))
-def cypher_api():
-    query = ''
-    if 'query' in request.args:     # GET
-        query = request.args.get('query')
-    elif request.data:              # POST
-        query = request.data.decode('UTF-8')
-
-    if query:
-        if isAllowedCypherQuery(query):
-            answer = app.config["cypher-backend"].execute(query)
-        else:
-            raise ApiError("Cypher query is not allowed!", 403)
-    else:
-        raise ApiError('missing or empty "query" parameter', 400)
-
-    return jsonify(answer)
-
-
 @app.route('/api/sparql', methods=('GET', 'POST'))
 def sparql_api():
     return app.config["sparql-proxy"].proxyRequest(request)
-
-
-@app.route('/cypher')
-def cypher_form():
-    return render('cypher.html')
 
 
 @app.route('/sparql')
@@ -216,6 +185,23 @@ def tools():
 def quit(msg):
     print(msg, file=sys.stderr)
     sys.exit(1)
+
+
+def init(**config):
+    for key in config.keys():
+        app.config[key] = config[key]
+
+    endpoint = config["sparql"]["endpoint"]
+    app.config["sparql-proxy"] = SparqlProxy(endpoint, config["debug"])
+
+    stage = config.get("stage")
+    if stage and not os.path.isdir(stage):
+        quit(f"N4o import directory {stage} is not available!")
+
+    if "tools" in config:
+        for tool in config["tools"]:
+            if "proxy" in tool and "path" in tool:
+                enable_proxy(app, tool["proxy"], tool["path"])
 
 
 if __name__ == '__main__':
@@ -234,29 +220,7 @@ if __name__ == '__main__':
     except Exception as err:
         quit(str(err))
 
-    for key in config.keys():
-        app.config[key] = config[key]
-
-    endpoint = config["sparql"]["endpoint"]
-    app.config["sparql-proxy"] = SparqlProxy(endpoint, config["debug"])
-    try:
-        app.config["sparql-proxy"].alive()
-    except Exception:
-        quit(f"SPARQL endpoint {endpoint} is not available!")
-
-    stage = config.get("stage")
-    if stage and not os.path.isdir(stage):
-        quit(f"N4o import directory {stage} is not available!")
-
-    if "tools" in config:
-        for tool in config["tools"]:
-            if "proxy" in tool and "path" in tool:
-                enable_proxy(app, tool["proxy"], tool["path"])
-
-    if "cypher" in config:
-        # TODO: check if backend is alive, else exit
-        print(f"Using Cypher backend {config['cypher']['uri']}")
-        app.config["cypher-backend"] = CypherBackend(config['cypher'])
+    init(**config)
 
     if args.wsgi:
         print(f"Starting WSGI server at http://localhost:{args.port}/")

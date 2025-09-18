@@ -20,11 +20,11 @@
   </head>
   <body>  
     <header>
-    	<nav>
+    	<nav class="navbar">
     		<div>
-    			<div class="nav-brand">
-    				<a href="https://www.nfdi4objects.net/" class="nav-logo"><img src="{{url_for('static',filename='nfdi4objects-logo.png')}}"></a>
-        		<a href="{{url_for('index')}}" class="nav-title"><span>NFDI4<strong>Objects Knowledge Graph</strong></span></a>
+    			<div class="navbar-brand">
+    				<a href="https://www.nfdi4objects.net/" class="navbar-logo"><img src="{{url_for('static',filename='nfdi4objects-logo.png')}}"></a>
+        		<a href="{{url_for('index')}}" class="navbar-title"><span>NFDI4<strong>Objects Knowledge Graph</strong></span></a>
     			</div>
     			<div class= "nav-list">
     				<ul>
@@ -47,6 +47,13 @@
             		<a href="{{url_for('terminology')}}"><span><strong>Terminologies</strong></span></a>
           			{% else %}
             		<a href="{{url_for('terminology')}}"><span>Terminologies</span></a>
+          			{% endif %}
+        			</li>
+        			<li>
+          			{% if request.path.startswith("/repository") %}
+            		<a href="{{url_for('repository')}}"><span><strong>Repositories</strong></span></a>
+          			{% else %}
+            		<a href="{{url_for('repository')}}"><span>Repositories</span></a>
           			{% endif %}
         			</li>
         			{% if config.tools %}

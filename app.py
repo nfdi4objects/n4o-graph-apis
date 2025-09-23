@@ -37,7 +37,7 @@ app = Flask(__name__)
 def render(template, **vars):
     # TODO: better title?
     title = template.split(".")[0]
-    return render_template(template, title=title, githash=app.config["githash"], **vars)
+    return render_template(template, title=title, **vars)
 
 
 @app.errorhandler(ApiError)
@@ -95,10 +95,10 @@ def terminology():
     return render('terminologies.html')
 
 
-@app.route('/repository')
-@app.route('/repository/')
-def repository():
-    return render('repositories.html')
+@app.route('/mappings')
+@app.route('/mappings/')
+def mappings():
+    return render('mappings.html')
 
 
 @app.route('/collection', defaults={'id': None, 'path': None})
@@ -156,9 +156,6 @@ def collection(id, path):
                 format = "turtle"
                 mimetype = "text/turtle"
 
-        print("Format, mimetype")
-        print(format, mimetype)
-
         response = make_response("Not found", 404)
         response.mimetype = "text/plain"
         if len(graph) > 0:
@@ -175,7 +172,7 @@ def sparql_api():
 
 @app.route('/sparql')
 def sparql_form():
-    return render('sparql.html', **config["sparql"])
+    return render('sparql.html', **config)
 
 
 @app.route('/tools')
@@ -192,7 +189,7 @@ def init(**config):
     for key in config.keys():
         app.config[key] = config[key]
 
-    endpoint = config["sparql"]["endpoint"]
+    endpoint = config["sparql"]
     app.config["sparql-proxy"] = SparqlProxy(endpoint, config["debug"])
 
     stage = config.get("stage")

@@ -1,25 +1,21 @@
 from collections import UserDict
 import yaml
+from pathlib import Path
 import glob
 import re
 import os
 import subprocess
 
 
-def extend_examples(api):
-    if "examples" in api:
-        extended = []
-        for ex in api["examples"]:
-            if isinstance(ex, str):
-                for file in glob.glob(ex):
-                    lines = open(file).read().split("\n")
-                    name = re.sub(r"^#\s*", "", lines[0])
-                    extended.append({"name": name, "query": "\n".join(lines)})
-            else:
-                extended.append(ex)
-        api["examples"] = extended
-    else:
-        api["examples"] = []
+def get_queries(path):
+    path = Path(path)
+    queries = []
+    if path.is_dir():
+        for file in path.glob('*.rq'):
+            lines = open(file).read().split("\n")
+            name = re.sub(r"^#\s*", "", lines[0])
+            queries.append({"name": name, "query": "\n".join(lines)})
+    return queries
 
 
 class Config(UserDict):
@@ -38,35 +34,15 @@ class Config(UserDict):
         else:
             self.data = {}
 
-        if not self.get("stage", None):
-            self.data["stage"] = os.getenv('STAGE', 'stage')
-        if not self.data.get("sparql", None):
-            self.data["sparql"] = {
-                "endpoint": os.getenv('SPARQL', "http://localhost:3030/n4o")
-            }
+        self.data["stage"] = os.getenv('STAGE', 'stage')
+        self.data["sparql"] = os.getenv('SPARQL', "http://localhost:3030/n4o")
 
         if debug:
             self.data["debug"] = True
         elif "debug" not in self.data:
             self.data["debug"] = False
 
-        if "import" in self.data:
-            for name in ["collections", "terminologies"]:
-                if name in self.data["import"]:
-                    path = self.data["import"][name]
-                    if not os.path.isdir(path):
-                        raise Exception(f"Missing {name} path: {path}")
-        else:
-            self.data["import"] = {}
-
-        extend_examples(self.data["sparql"])
+        self.data["queries"] = get_queries(os.getenv('QUERIES', 'queries'))
 
         if "tools" not in self.data:
             self.data["tools"] = []
-
-        try:
-            self.data["githash"] = subprocess.run(['git', 'rev-parse', '--short=8', 'HEAD'],
-                                                  stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
-        except Exception:
-            self.data["githash"] = None
-            pass

@@ -1,17 +1,6 @@
 # run in debug mode to emit more debugging information
 debug: false
 
-# SPARQL endpoint and examples (required)
-sparql:
-  endpoint: http://localhost:3030/n4o
-  examples:
-    # examples given in files
-    - queries/*.rq
-    # example given in config file
-    - name: List all classes
-      query: |
-        SELECT DISTINCT ?class WHERE { [] a ?class }  examples:
-
 # Links to tools and references (optional)
 tools:
   - name: LIDO-Schulung

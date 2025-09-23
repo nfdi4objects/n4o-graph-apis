@@ -1,20 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
- <script src="{{url_for('static',filename='yasr.min.js')}}"></script>
- <script src="{{url_for('static',filename='yasqe.min.js')}}"></script>
- <script src="{{url_for('static',filename='sparql-gui.js')}}"></script>
+<script src="{{url_for('static',filename='yasr.min.js')}}"></script>
+<script src="{{url_for('static',filename='yasqe.min.js')}}"></script>
+<script src="{{url_for('static',filename='sparql-gui.js')}}"></script>
 
-  {% if 'examples' in config.sparql %}
-    {% set examples = config.sparql.examples %}
-    {% include 'examples.html' %}
-  {% endif %}
+<div style="float:right;">
+  <label for="examples">Example queries:</label>
+  <select id="examples">
+    <option value="">Please select!</option>
+    {% for q in config.queries %}
+      <option value="{{q.query}}">{{q.name}}</option>
+    {% endfor %}
+  </select>
+</div>
 
-  <p>
-    SPARQL endpoint <code>/api/sparql</code>
-    (see <a href="https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/#query-operation">documentation</a>)
-  </p>
+ <p>
+   SPARQL endpoint <code>/api/sparql</code>
+   (see <a href="https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/#query-operation">documentation</a>)
+ </p>
 
-  <div id="yasqe"></div>
-  <div id="yasr"></div>
+ <div id="yasqe"></div>
+ <div id="yasr"></div>
 {% endblock %}

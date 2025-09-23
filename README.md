@@ -64,17 +64,9 @@ A local file `config.yaml` is needed with configuration. See [`config.example.ya
 
 In addition the following environment variables can be used:
 
+- `SPARQL`: backend API endpoint. Default: `http://localhost:3030/n4o/`
 - `STAGE`: readable stage directory. Default: `stage`
-
-### SPARQL
-
-The default configuration expects a SPARL endpoint at <http://localhost:3030/n4o/>. This can be provided with Fuseki triple store and a database `n4o` locally created like this:
-
-~~~sh
-curl --data "dbName=n4o&dbType=tdb2" http://localhost:3030/$/datasets
-~~~
-
-Alternatively use the preconfigured Docker container [n4o-fuseki](https://github.com/nfdi4objects/n4o-fuseki#readme).
+- `QUERIES`: directory with sample SPARQL queries with file extension `.rq`. Default: `queries`
 
 The RDF database is expected to be grouped in named graphs:
 
@@ -84,7 +76,7 @@ The RDF database is expected to be grouped in named graphs:
 - Graphs `http://bartoc.org/en/node/X` where X is an integer contain information from individual terminologies
 - The default graph must be configured as union graph.
 
-See [n4o-graph-importer](https://github.com/nfdi4objects/n4o-graph-importer#readme) for a component to ensure RDF data is only imported into the triple store as expected.
+See [n4o-fuseki](https://github.com/nfdi4objects/n4o-fuseki#readme) for preconfigured Triple store and [n4o-graph-importer](https://github.com/nfdi4objects/n4o-graph-importer#readme) for a component to ensure RDF data is only imported into the triple store as expected.
 
 ### Tools
 
@@ -139,6 +131,8 @@ To locally build the Docker image run `make docker`. The container is named `n4o
 ~~~sh
 docker run --rm --net=host -p 8000:8000 -v ./config.yaml:/app/config.yaml:ro n4o-graph-apis
 ~~~
+
+To use custom queries, mount your local directory to `/app/queries`
 
 ## License
 

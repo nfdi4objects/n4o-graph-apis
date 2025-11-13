@@ -8,6 +8,7 @@ import mimeparse
 import traceback
 from rdflib import URIRef
 from datetime import datetime
+import requests
 
 from lib import SparqlProxy, ApiError, Config, enable_proxy
 
@@ -178,6 +179,15 @@ def sparql_form():
 @app.route('/tools')
 def tools():
     return render('tools.html')
+
+#TODO: support formats
+#TODO: test on lido.nfdi4objects.net
+@app.route(f"/lido2rdf/convert", methods=["POST"])
+def lido_convert_api():
+    ''' Proxy to LIDO converter service '''
+    converter_host = os.getenv('LIDO_CONVERTER_HOST', 'http://converter:5000') # Default to docker service name
+    data = request.files['file'].read().decode('utf-8')
+    return requests.post(f'{converter_host}/convert', data=data).text
 
 
 def quit(msg):

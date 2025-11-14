@@ -1,6 +1,7 @@
 import json
 import sys
 import os
+import io
 from flask import Flask, render_template, request, make_response, send_from_directory
 from waitress import serve
 from argparse import ArgumentParser, BooleanOptionalAction
@@ -180,15 +181,14 @@ def sparql_form():
 def tools():
     return render('tools.html')
 
-#TODO: support formats
 #TODO: test on lido.nfdi4objects.net
 @app.route(f"/lido2rdf/convert", methods=["POST"])
-def lido_convert_api():
+def lido_convert():
     ''' Proxy to LIDO converter service '''
-    converter_host = os.getenv('LIDO_CONVERTER_HOST', 'http://converter:5000') # Default to docker service name
-    data = request.files['file'].read().decode('utf-8')
-    return requests.post(f'{converter_host}/convert', data=data).text
-
+    converter_url = os.getenv('LIDO_CONVERTER_HOST', 'http://converter:5000')
+    files = { k : io.BytesIO(v.read()) for k,v in request.files.items()}
+    format = request.form.get('format','turtle')
+    return requests.post(converter_url, files=files, data={'format':format}).text
 
 def quit(msg):
     print(msg, file=sys.stderr)

@@ -14,6 +14,6 @@ package.json
 package-lock.json
 
 # local files
-config.yaml
+#config.yaml
 stage
 queries

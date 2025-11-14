@@ -181,11 +181,9 @@ def sparql_form():
 def tools():
     return render('tools.html')
 
-#TODO: test on lido.nfdi4objects.net
 @app.route(f"/lido2rdf/convert", methods=["POST"])
 def lido_convert():
-    ''' Proxy to LIDO converter service '''
-    converter_url = os.getenv('LIDO_CONVERTER_HOST', 'http://converter:5000')
+    converter_url =  os.getenv('LIDO_PROXY_URL','http://converter:5000/convert')
     files = { k : io.BytesIO(v.read()) for k,v in request.files.items()}
     format = request.form.get('format','turtle')
     return requests.post(converter_url, files=files, data={'format':format}).text

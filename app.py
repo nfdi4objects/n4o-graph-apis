@@ -181,13 +181,6 @@ def sparql_form():
 def tools():
     return render('tools.html')
 
-@app.route(f"/lido2rdf/convert", methods=["POST"])
-def lido_convert():
-    converter_url =  os.getenv('LIDO_PROXY_URL','http://converter:5000/convert')
-    files = { k : io.BytesIO(v.read()) for k,v in request.files.items()}
-    format = request.form.get('format','turtle')
-    return requests.post(converter_url, files=files, data={'format':format}).text
-
 def quit(msg):
     print(msg, file=sys.stderr)
     sys.exit(1)

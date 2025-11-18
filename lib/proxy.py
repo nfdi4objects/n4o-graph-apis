@@ -1,5 +1,5 @@
 import requests
-from flask import request, Response
+from flask import request, make_response, Response
 
 # Simple HTTP Proxy
 # TODO: may better be done like shown at <https://stackoverflow.com/a/36601467>
@@ -13,18 +13,16 @@ def cleanHeaders(res):
 
 
 def enable_proxy(app, backend, base):
-    @app.route(base, methods=['GET', 'POST', 'DELETE'], defaults={'path': ''})
-    @app.route(f"{base}<path:path>", methods=["GET", "POST", "DELETE"])
+    @app.route(f'{base}', methods=['GET', 'POST', 'DELETE'], defaults={'path': ''})
+    @app.route(f'{base}<path:path>', methods=['GET', 'POST', 'DELETE'])
     def action(path):
-        match request.method:
-            case 'GET':
-                res = requests.get(f"{backend}{path}")
-            case 'DELETE':
-                res = requests.delete(
-                    f"{backend}{path}", headers=request.headers, data=request.data)
-            case "POST":
-                res = requests.post(
-                    f"{backend}{path}", headers=request.headers, json=request.json, data=request.data)
-            case _:
-                res = f'Unsupported method {request.method}'
-        return Response(res.content, res.status_code, cleanHeaders(res))
+        target_url = f'{backend}{path}'
+        if request.method == 'GET':
+            resp = requests.get(target_url, headers=request.headers, data=request.data)
+        elif request.method == 'DELETE':
+            resp = requests.delete(target_url, headers=request.headers, data=request.data)
+        elif request.method == 'POST':
+            resp = requests.post(target_url, data=request.form, files=request.files)
+        else:
+            resp = make_response(f'Not supported method {request.method}', 500)
+        return Response(resp.content, resp.status_code, cleanHeaders(resp))

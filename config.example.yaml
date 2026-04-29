@@ -10,3 +10,6 @@ tools:
     path: /lido2rdf/
     proxy: http://localhost:5000/
     description: Convert LIDO XML to RDF
+  - name: Cocoda
+    url: https://coli-conc.gbv.de/cocoda/nfdi4objects/
+    description: Mapping-Editor 

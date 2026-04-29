@@ -67,6 +67,7 @@ In addition the following environment variables can be used:
 - `SPARQL`: backend API endpoint. Default: `http://localhost:3030/n4o/`
 - `STAGE`: readable stage directory. Default: `stage`
 - `QUERIES`: directory with sample SPARQL queries with file extension `.rq`. Default: `queries`
+- `REPORTS`: directory with report SPARQL queries with file extension `.rq`. Default: `reports`
 
 The RDF database is expected to be grouped in named graphs:
 
@@ -105,7 +106,7 @@ Information about terminologies will be made available from <https://graph.nfdi4
 
 ## Development
 
-To locally run the application first install required Python dependencies with virtualenv:
+To locally run the application first install required Python dependencies with virtualenv (`make .venv`):
 
 ~~~sh
 python -m venv .venv
@@ -114,13 +115,11 @@ pip install -r requirements.txt
 pip install -r requirements-dev.txt
 ~~~
 
-Then locally run for testing:
+Then locally run for testing (`make dev`):
 
 ~~~sh
-python app.py --help
+python app.py --debug
 ~~~
-
-Alternatively run `make .venv` and `make dev`.
 
 Please run `make lint` to detect Python coding style violations and `make fix` to fix some of these violations. Some unit tests are run with `make test`.
 

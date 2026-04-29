@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<p>
+  The following SPARQL queries give an overview about the knowledge graph.
+</p>
+
+<ul>
+  {% for q in config.reports %}
+  <li><a href="../sparql?#query={{urllib.parse.quote(q.query)}}">{{q.name}}</li>
+  {% endfor %}
+</ul>
+
+{% endblock %}

@@ -1,7 +1,6 @@
 import json
 import sys
 import os
-import io
 from flask import Flask, render_template, request, make_response, send_from_directory
 from waitress import serve
 from argparse import ArgumentParser, BooleanOptionalAction
@@ -9,7 +8,7 @@ import mimeparse
 import traceback
 from rdflib import URIRef
 from datetime import datetime
-import requests
+import urllib
 
 from lib import SparqlProxy, ApiError, Config, enable_proxy
 
@@ -90,19 +89,6 @@ rdf_formats = {
 }
 
 
-@app.route('/terminology')
-@app.route('/terminology/')
-def terminology():
-    # TODO: server RDF as well
-    return render('terminologies.html')
-
-
-@app.route('/mappings')
-@app.route('/mappings/')
-def mappings():
-    return render('mappings.html')
-
-
 @app.route('/collection', defaults={'id': None, 'path': None})
 @app.route('/collection/', defaults={'id': None, 'path': None})
 @app.route('/collection/<int:id>', defaults={'path': None})
@@ -167,6 +153,25 @@ def collection(id, path):
         return response
 
 
+@app.route('/terminology')
+@app.route('/terminology/')
+def terminology():
+    # TODO: server RDF as well
+    return render('terminologies.html')
+
+
+@app.route('/mappings')
+@app.route('/mappings/')
+def mappings():
+    return render('mappings.html')
+
+
+@app.route('/reports')
+@app.route('/reports/')
+def reports():
+    return render('reports.html', urllib=urllib)
+
+
 @app.route('/api/sparql', methods=('GET', 'POST'))
 def sparql_api():
     return app.config["sparql-proxy"].proxyRequest(request)
@@ -180,6 +185,7 @@ def sparql_form():
 @app.route('/tools')
 def tools():
     return render('tools.html')
+
 
 def quit(msg):
     print(msg, file=sys.stderr)

@@ -55,6 +55,13 @@
             		<a href="{{url_for('mappings')}}"><span>Mappings</span></a>
           			{% endif %}
         			</li>
+        			<li>
+          			{% if request.path.startswith("/reports") %}
+            		<a href="{{url_for('reports')}}"><span><strong>Reports</strong></span></a>
+          			{% else %}
+            		<a href="{{url_for('reports')}}"><span>Reports</span></a>
+          			{% endif %}
+        			</li>
         			{% if config.tools %}
         			<li>
           			{% if request.path.startswith("/tools") %}

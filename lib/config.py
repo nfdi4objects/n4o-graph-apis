@@ -42,6 +42,7 @@ class Config(UserDict):
             self.data["debug"] = False
 
         self.data["queries"] = get_queries(os.getenv('QUERIES', 'queries'))
+        self.data["reports"] = get_queries(os.getenv('REPORTS', 'reports'))
 
         if "tools" not in self.data:
             self.data["tools"] = []

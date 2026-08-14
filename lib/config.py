@@ -16,6 +16,16 @@ def get_queries(path):
     return queries
 
 
+defaults = {
+    'stage': 'stage',
+    'title': 'NFDI4Objects Knowledge Graph',
+    'sparql': 'http://localhost:3030/n4o',
+    'base': 'https://graph.nfdi4objects.net/',
+    'queries': 'queries',
+    'reports': 'reports'
+}
+
+
 class Config(UserDict):
     def __init__(self, file=None, debug=False):
         self.data = {}
@@ -33,19 +43,14 @@ class Config(UserDict):
                                                     mark.column + 1)
                 raise Exception(msg)
 
-        self.data["stage"] = os.getenv('STAGE', 'stage')
-        self.data["sparql"] = os.getenv('SPARQL', "http://localhost:3030/n4o")
-        if "base" not in self.data:
-            self.data["base"] = os.getenv(
-                'BASE', 'https://graph.nfdi4objects.net/')
+        for name in defaults:
+            if name not in self.data:
+                self.data[name] = os.getenv(name.upper(), defaults[name])
 
         if debug:
             self.data["debug"] = True
         elif "debug" not in self.data:
             self.data["debug"] = False
-
-        self.data["queries"] = get_queries(os.getenv('QUERIES', 'queries'))
-        self.data["reports"] = get_queries(os.getenv('REPORTS', 'reports'))
 
         if "tools" not in self.data:
             self.data["tools"] = []

@@ -63,11 +63,12 @@ A local file `config.yaml` is needed with configuration. See [`config.example.ya
 
 In addition the following environment variables can be used:
 
+- `TITLE`: title of the application. Default: `NFDI4Objects Knowledge Graph`
+- `BASE`: base URI of graphs in the triple store. Default: `https://graph.nfdi4objects.net/`
 - `SPARQL`: backend API endpoint. Default: `http://localhost:3030/n4o/`
 - `STAGE`: readable stage directory. Default: `stage`
 - `QUERIES`: directory with sample SPARQL queries with file extension `.rq`. Default: `queries`
 - `REPORTS`: directory with report SPARQL queries with file extension `.rq`. Default: `reports`
-- `BASE`: base URI of graphs in the triple store. Default: `https://graph.nfdi4objects.net/`
 
 The RDF database is expected to be grouped in named graphs (`${BASE}` replaced by the value of `BASE`):
 

@@ -9,9 +9,8 @@ def client():
 
     config = Config()
     config["stage"] = "tests/stage"
-    # data = Path(__file__).parent
-    # init(title="N4O Graph Import API TEST",
-    #     stage=stage, sparql=sparqlApi, data=data)
+    config["title"] = "XYZ"
+
     init(**config)
 
     with app.test_client() as client:
@@ -21,3 +20,5 @@ def client():
 def test_app(client):
     resp = client.get('/')
     assert resp.status_code == 200
+
+    assert "<title>XYZ" in resp.text

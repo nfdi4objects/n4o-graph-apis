@@ -16,7 +16,7 @@
     <script>const graphBase = "{{base}}"</script>
     <script src="{{url_for('static',filename='common.js')}}"></script>
     <meta name="msapplication-TileImage" content="{{url_for('static',filename='nfdi4objects-logo.png')}}" />
-    <title>N4O Graph: {{title}}</title>
+    <title>{{title}}: {{subtitle}}</title>
   </head>
   <body>  
     <header>
@@ -24,7 +24,7 @@
     		<div>
     			<div class="navbar-brand">
     				<a href="https://www.nfdi4objects.net/" class="navbar-logo"><img src="{{url_for('static',filename='nfdi4objects-logo.png')}}"></a>
-        		<a href="{{url_for('index')}}" class="navbar-title"><span>NFDI4<strong>Objects Knowledge Graph</strong></span></a>
+                    <a href="{{url_for('index')}}" class="navbar-title">{{title}}</a>
     			</div>
     			<div class= "nav-list">
     				<ul>

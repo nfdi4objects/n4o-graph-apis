@@ -37,9 +37,9 @@ app = Flask(__name__)
 
 def render(template, **vars):
     # TODO: better title?
-    title = template.split(".")[0]
+    subtitle = template.split(".")[0]
     config = app.config
-    return render_template(template, title=title, **config, **vars)
+    return render_template(template, subtitle=subtitle, **config, **vars)
 
 
 @app.errorhandler(ApiError)

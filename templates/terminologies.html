@@ -4,10 +4,8 @@
  <script src="{{url_for('static',filename='yasr.min.js')}}"></script>
 
 <p>
-  The RDF graph
-  <a href="https://graph.nfdi4objects.net/terminology/">https://graph.nfdi4objects.net/terminology/</a>
-  contains information about N4O Terminologies. The list of
-  terminologies is
+  The RDF graph <a href="/terminology/">{{base}}terminology/</a>
+  contains information about N4O Terminologies. The list of terminologies is
   <a href="https://bartoc.org/en/node/18961">managed in BARTOC</a>.
   Terminology mappings are <a href="https://coli-conc.gbv.de/cocoda/nfdi4objects/">managed with Cocoda</a>.
 </p>
@@ -20,7 +18,7 @@
 
 <div data-sparql-table="
 SELECT ?voc (SAMPLE(?names) as ?name) ?namespace ?graph {
-  GRAPH <https://graph.nfdi4objects.net/terminology/> {
+  GRAPH terminology: {
     ?voc a skos:ConceptScheme .
     ?voc skos:prefLabel ?names .
     OPTIONAL { ?voc void:uriSpace ?namespace }

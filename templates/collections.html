@@ -4,24 +4,20 @@
 
 <script src="{{url_for('static',filename='yasr.min.js')}}"></script>
 
-
 <p>
   A collection is an individual set of research data imported into the knowledge graph.
-  Each collection is identified by an URI starting with
-  <code>https://graph.nfdi4objects.net/collection/</code>.
+  Each collection is identified by an URI starting with <code>{{ base }}collection/</code>.
   Each collection belongs to a <a href="/repository/">research data repository</a>
   where its data has been published.
 </p>
 <p>
   Information about collections is stored in the
-  RDF graph <a data-sparql="SELECT * FROM &lt;https://graph.nfdi4objects.net/collection/&gt; {
- ?subject ?predicate ?object
-}">https://graph.nfdi4objects.net/collection/</a>.
+  RDF graph <a data-sparql="SELECT * FROM collection: { ?subject ?predicate ?object }">{{ base }}collection/</a>.
 </p>
 
 <div data-sparql-table="
-SELECT ?collection ?name ?repository ?license FROM n4oc: WHERE {  
-  ?collection dct:isPartOf n4oc: .
+SELECT ?collection ?name ?repository ?license FROM <{{ base }}collection/> WHERE {
+?collection dct:isPartOf <{{ base }}collection/> .
   OPTIONAL { ?collection schema:name ?name }
   OPTIONAL { ?repository dcat:dataset ?collection }
   OPTIONAL { ?collection dct:license ?license }

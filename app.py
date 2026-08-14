@@ -38,7 +38,8 @@ app = Flask(__name__)
 def render(template, **vars):
     # TODO: better title?
     title = template.split(".")[0]
-    return render_template(template, title=title, **vars)
+    config = app.config
+    return render_template(template, title=title, **config, **vars)
 
 
 @app.errorhandler(ApiError)
@@ -117,10 +118,10 @@ def collection(id, path):
         # TODO: more beautiful message
         return "Not found!"
 
-    uri = "https://graph.nfdi4objects.net/collection/" + str(id)
-    graph = app.config["sparql-proxy"].request(
-        "DESCRIBE <" + uri + ">",
-        {"named-graph-uri": "https://graph.nfdi4objects.net/collection/"})
+    base = app.config.get("uri_base")
+    uri = f"{base}collection/{id}"
+    graph = app.config["sparql-proxy"].request(f"DESCRIBE <{uri}>",
+                                               {"named-graph-uri": f"{base}collection/"})
 
     if html_wanted:
         if len(graph) > 0:
@@ -179,7 +180,7 @@ def sparql_api():
 
 @app.route('/sparql')
 def sparql_form():
-    return render('sparql.html', **config)
+    return render('sparql.html')
 
 
 @app.route('/tools')
@@ -201,7 +202,7 @@ def init(**config):
 
     stage = config.get("stage")
     if stage and not os.path.isdir(stage):
-        quit(f"N4o import directory {stage} is not available!")
+        quit(f"Stage directory {stage} is not available!")
 
     if "tools" in config:
         for tool in config["tools"]:

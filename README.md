@@ -9,9 +9,8 @@
 This repository implements public web APIs to the NFDI4Objects Knowledge Graph,
 available at <https://graph.nfdi4objects.net/>. The Knowledge Graph database
 can be queried [with SPARQL](#sparql-api) using the API endpoints provided by
-this web application. In addition, collection URIs starting with
-<https://graph.nfdi4objects.net/collection/> are served as linked open data and
-import reports can be inspected.
+this web application. In addition, collection URIs are served as linked open
+data and import reports can be inspected.
 
 For additional information see the [Knowledge Graph Manual](https://nfdi4objects.github.io/n4o-graph/) (in German).
 
@@ -68,13 +67,14 @@ In addition the following environment variables can be used:
 - `STAGE`: readable stage directory. Default: `stage`
 - `QUERIES`: directory with sample SPARQL queries with file extension `.rq`. Default: `queries`
 - `REPORTS`: directory with report SPARQL queries with file extension `.rq`. Default: `reports`
+- `BASE`: base URI of graphs in the triple store. Default: `https://graph.nfdi4objects.net/`
 
-The RDF database is expected to be grouped in named graphs:
+The RDF database is expected to be grouped in named graphs (`${BASE}` replaced by the value of `BASE`):
 
-- Graph `https://graph.nfdi4objects.net/collection/` contains information about collections
-- Graphs `https://graph.nfdi4objects.net/collection/X` where X is an integer contain information from individual collections
-- Graph `https://graph.nfdi4objects.net/terminology/` contains information about terminologies
-- Graphs `http://bartoc.org/en/node/X` where X is an integer contain information from individual terminologies
+- Graph `${BASE}collection/` contains information about collections
+- Graphs `${BASE}collection/${ID}` where `${ID}` is an integer contain information from individual collections
+- Graph `${BASE}terminology/` contains information about terminologies
+- Graphs `http://bartoc.org/en/node/${ID}` where `${ID}` is an integer contain information from individual terminologies
 - The default graph must be configured as union graph.
 
 See [n4o-fuseki](https://github.com/nfdi4objects/n4o-fuseki#readme) for preconfigured Triple store and [n4o-graph-importer](https://github.com/nfdi4objects/n4o-graph-importer#readme) for a component to ensure RDF data is only imported into the triple store as expected.

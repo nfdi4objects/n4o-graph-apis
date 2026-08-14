@@ -13,7 +13,6 @@ const knownPrefixes = {
   dctype: "http://purl.org/dc/dcmitype/",
   foaf: "http://xmlns.com/foaf/0.1/",
   geo: "http://www.opengis.net/ont/geosparql#",
-  n4oc: "https://graph.nfdi4objects.net/collection/",
   owl: "http://www.w3.org/2002/07/owl#>",
   rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
   rdfs: "http://www.w3.org/2000/01/rdf-schema#",
@@ -35,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const prefixes = () => {
     const editorPrefixes = editor.getPrefixesFromQuery()
-    return { ...knownPrefixes, ...editorPrefixes }
+    return { ...commonPrefixes, ...knownPrefixes, ...editorPrefixes }
   }
 
  const yasr = new Yasr(document.getElementById("yasr"), { prefixes })

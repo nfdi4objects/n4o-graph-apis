@@ -35,6 +35,9 @@ class Config(UserDict):
 
         self.data["stage"] = os.getenv('STAGE', 'stage')
         self.data["sparql"] = os.getenv('SPARQL', "http://localhost:3030/n4o")
+        if "base" not in self.data:
+            self.data["base"] = os.getenv(
+                'BASE', 'https://graph.nfdi4objects.net/')
 
         if debug:
             self.data["debug"] = True

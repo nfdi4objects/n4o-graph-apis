@@ -5,7 +5,7 @@ deps: .venv
 	.venv/bin/pip install -r requirements-dev.txt
 
 test:
-	.venv/bin/python -m pytest
+	@. .venv/bin/activate && coverage run -m pytest -v -s && coverage report -m
 
 dev:
 	.venv/bin/python app.py --debug
